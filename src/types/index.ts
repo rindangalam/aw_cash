@@ -29,3 +29,25 @@ export interface Category {
   icon: string;
   color: string;
 }
+
+export interface SavingsGoal {
+  id?: number;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  icon: string;
+  color: string;
+  deadline?: string;
+  closed: boolean;
+  createdAt: string;
+}
+
+export interface SavingsRecord {
+  id?: number;
+  goalId: number;
+  amount: number;
+  type: 'setor' | 'ambil';
+  note?: string;
+  date: string;
+  createdAt: string;
+}

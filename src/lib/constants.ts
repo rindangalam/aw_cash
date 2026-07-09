@@ -27,3 +27,13 @@ export function getCategoryById(id: string): Category | undefined {
 export function getCategoriesByType(type: 'income' | 'expense'): Category[] {
   return type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
 }
+
+export const SAVINGS_GOAL_ICONS = [
+  'Smartphone', 'Plane', 'Shield', 'Car', 'Home', 'GraduationCap',
+  'Gift', 'Heart', 'Umbrella', 'Laptop', 'Camera', 'Music',
+];
+
+export const SAVINGS_GOAL_COLORS = [
+  '#0F766E', '#2563EB', '#7C3AED', '#DB2777', '#DC2626',
+  '#EA580C', '#CA8A04', '#16A34A', '#0891B2', '#6366F1',
+];

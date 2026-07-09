@@ -5,6 +5,7 @@ import { SpendingAlerts } from '../components/SpendingAlerts';
 import { CompareChart } from '../components/CompareChart';
 import { ExpensePieChart } from '../components/ExpensePieChart';
 import { TrendLineChart } from '../components/TrendLineChart';
+import { DashboardSavingsWidget } from '../components/DashboardSavingsWidget';
 import { Card } from '../components/ui/Card';
 import { LucideIcon } from '../components/ui/LucideIcon';
 import { useTransactions } from '../hooks/useTransactions';
@@ -73,6 +74,9 @@ export function Dashboard() {
 
         {/* Spending Alerts */}
         <SpendingAlerts limit={3} />
+
+        {/* Savings Widget */}
+        <DashboardSavingsWidget />
 
         {/* Compare Chart */}
         <Card>
