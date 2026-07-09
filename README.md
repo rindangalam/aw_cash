@@ -1,32 +1,80 @@
-# React + TypeScript + Vite
+# AW Cash
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplikasi manajemen keuangan personal offline-first (PWA).
 
-Currently, two official plugins are available:
+## Fitur
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Dashboard
+- Ringkasan saldo bulanan (pemasukan - pengeluaran)
+- Perbandingan bulanan (bulan ini vs bulan lalu)
+- Grafik pie pengeluaran per kategori
+- Grafik trend 6 bulan terakhir
+- Widget tabungan (total & progress)
+- Spending alerts (warning jika budget > 75%)
 
-## React Compiler
+### Transaksi
+- Catat pemasukan & pengeluaran
+- 8 kategori pemasukan (Gaji, Freelance, Investasi, dll)
+- 8 kategori pengeluaran (Makanan, Transport, Belanja, dll)
+- Filter & search transaksi
+- Toggle list/calendar view
+- Edit & hapus transaksi
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Budget
+- Atur budget per kategori per bulan
+- Progress bar real-time
+- Alert jika mendekati batas budget
 
-## Expanding the Oxlint configuration
+### Tabungan
+- Buat multiple savings goals (Dana Darurat, Liburan, Beli HP, dll)
+- Catat setor & ambil manual
+- Kolom catatan/deskripsi
+- Progress bar per goal
+- Deadline tracking
+- Goal bisa ditutup/dihapus
+- Widget di dashboard
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+### Laporan
+- Grafik perbandingan bulanan
+- Breakdown per kategori
+- Export data ke CSV
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
+### Pengaturan
+- Light/Dark/System theme
+- Backup & restore data (JSON)
+- Format currency: IDR (Rp)
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Data Privacy & Security
+
+**Semua data tersimpan LOKAL di device kamu.**
+
+- Data disimpan di IndexedDB (database browser)
+- Tidak ada data yang dikirim ke server
+- Tidak ada backend/server - murni client-side
+- Hosting hanya menyimpan kode app, bukan data user
+- Setiap user terisolasi total satu sama lain
+
+> ⚠️ Penting:
+> - Jika clear browser data → data hilang
+> - Jika ganti HP → data tidak otomatis pindah
+> - Gunakan fitur Backup/Restore untuk export/import data
+
+## Cara Install PWA
+
+### Android
+1. Buka app di Chrome
+2. Tap menu (3 titik) → "Install app" / "Add to Home Screen"
+3. Ikuti instruksi
+4. App muncul di home screen
+
+### iOS (iPhone)
+1. Buka app di Safari
+2. Tap tombol Share (kotak dengan panah)
+3. Tap "Add to Home Screen"
+4. Tap "Add"
+5. App muncul di home screen
+
+### Setelah Install
+- App bisa dibuka seperti app biasa
+- Bekerja offline (setelah pertama kali dibuka)
+- Data tetap tersimpan di lokal
