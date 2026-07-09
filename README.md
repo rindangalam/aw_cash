@@ -2,48 +2,6 @@
 
 Aplikasi manajemen keuangan personal offline-first (PWA).
 
-## Fitur
-
-### Dashboard
-- Ringkasan saldo bulanan (pemasukan - pengeluaran)
-- Perbandingan bulanan (bulan ini vs bulan lalu)
-- Grafik pie pengeluaran per kategori
-- Grafik trend 6 bulan terakhir
-- Widget tabungan (total & progress)
-- Spending alerts (warning jika budget > 75%)
-
-### Transaksi
-- Catat pemasukan & pengeluaran
-- 8 kategori pemasukan (Gaji, Freelance, Investasi, dll)
-- 8 kategori pengeluaran (Makanan, Transport, Belanja, dll)
-- Filter & search transaksi
-- Toggle list/calendar view
-- Edit & hapus transaksi
-
-### Budget
-- Atur budget per kategori per bulan
-- Progress bar real-time
-- Alert jika mendekati batas budget
-
-### Tabungan
-- Buat multiple savings goals (Dana Darurat, Liburan, Beli HP, dll)
-- Catat setor & ambil manual
-- Kolom catatan/deskripsi
-- Progress bar per goal
-- Deadline tracking
-- Goal bisa ditutup/dihapus
-- Widget di dashboard
-
-### Laporan
-- Grafik perbandingan bulanan
-- Breakdown per kategori
-- Export data ke CSV
-
-### Pengaturan
-- Light/Dark/System theme
-- Backup & restore data (JSON)
-- Format currency: IDR (Rp)
-
 ## Data Privacy & Security
 
 **Semua data tersimpan LOKAL di device kamu.**
