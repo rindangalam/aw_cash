@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Internal docs (tidak di-push ke GitHub)
+/docs
+/AGENTS.md
