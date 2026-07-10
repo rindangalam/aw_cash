@@ -1,8 +1,20 @@
 import { memo, useMemo } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
 import { formatCurrency, getMonthName } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
 import type { Transaction } from '../types';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
 interface TrendLineChartProps {
   transactions: Transaction[];
@@ -59,66 +71,101 @@ export const TrendLineChart = memo(function TrendLineChart({ transactions }: Tre
     );
   }
 
+  const data = {
+    labels: last6Months.map((d) => d.month),
+    datasets: [
+      {
+        label: 'Pemasukan',
+        data: last6Months.map((d) => d.pemasukan),
+        borderColor: '#0EA5E9',
+        backgroundColor: 'rgba(14, 165, 233, 0.08)',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: '#0EA5E9',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 6,
+        tension: 0.4,
+        fill: true,
+      },
+      {
+        label: 'Pengeluaran',
+        data: last6Months.map((d) => d.pengeluaran),
+        borderColor: '#DC2626',
+        backgroundColor: 'rgba(220, 38, 38, 0.08)',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: '#DC2626',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 6,
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false as const,
+    interaction: {
+      intersect: false,
+      mode: 'index' as const,
+    },
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+          padding: 16,
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+        },
+      },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: 500 },
+        bodyFont: { family: 'Plus Jakarta Sans', size: 12, weight: 500 },
+        padding: 10,
+        cornerRadius: 12,
+        displayColors: true,
+        callbacks: {
+          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) => {
+            const val = ctx.parsed.y;
+            return ` ${ctx.dataset.label}: ${val !== null ? formatCurrency(val) : '-'}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+        },
+      },
+      y: {
+        grid: { color: '#E7E5E4', drawBorder: false },
+        border: { display: false },
+        ticks: {
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+          callback: (value: number | string) => {
+            const num = typeof value === 'string' ? parseFloat(value) : value;
+            return num >= 1000000 ? `${(num / 1000000).toFixed(0)}jt` : `${(num / 1000).toFixed(0)}rb`;
+          },
+        },
+      },
+    },
+  };
+
   return (
-    <div className="w-full min-h-[280px]">
-      <ResponsiveContainer width="100%" height={280} minWidth={0}>
-        <LineChart data={last6Months} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E7E5E4" vertical={false} />
-          <XAxis
-            dataKey="month"
-            tick={{ fontSize: 11, fill: '#78716C', fontFamily: 'Plus Jakarta Sans', fontWeight: 500 }}
-            axisLine={false}
-            tickLine={false}
-          />
-          <YAxis
-            tick={{ fontSize: 11, fill: '#78716C', fontFamily: 'Plus Jakarta Sans', fontWeight: 500 }}
-            axisLine={false}
-            tickLine={false}
-            tickFormatter={(value: number) =>
-              value >= 1000000 ? `${(value / 1000000).toFixed(0)}jt` : `${(value / 1000).toFixed(0)}rb`
-            }
-          />
-          <Tooltip
-            formatter={(value) => formatCurrency(Number(value))}
-            contentStyle={{
-              backgroundColor: '#1C1917',
-              border: 'none',
-              borderRadius: '12px',
-              color: '#FAFAF9',
-              fontSize: '12px',
-              fontFamily: 'Plus Jakarta Sans',
-              fontWeight: 500,
-            }}
-          />
-          <Legend
-            iconType="circle"
-            iconSize={8}
-            formatter={(value: string) => (
-              <span className="text-[11px] font-medium text-text dark:text-text-dark">{value}</span>
-            )}
-          />
-          <Line
-            type="monotone"
-            dataKey="pemasukan"
-            name="Pemasukan"
-            stroke="#0EA5E9"
-            strokeWidth={2.5}
-            dot={{ r: 4, fill: '#0EA5E9', strokeWidth: 2, stroke: '#fff' }}
-            activeDot={{ r: 6, fill: '#0EA5E9' }}
-            isAnimationActive={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="pengeluaran"
-            name="Pengeluaran"
-            stroke="#DC2626"
-            strokeWidth={2.5}
-            dot={{ r: 4, fill: '#DC2626', strokeWidth: 2, stroke: '#fff' }}
-            activeDot={{ r: 6, fill: '#DC2626' }}
-            isAnimationActive={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className="w-full h-[280px]">
+      <Line data={data} options={options} />
     </div>
   );
 });

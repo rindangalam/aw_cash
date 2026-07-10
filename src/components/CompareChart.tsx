@@ -1,8 +1,11 @@
 import { useMemo, memo } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 import { formatCurrency, getMonthName } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
 import type { Transaction } from '../types';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 interface CompareChartProps {
   transactions: Transaction[];
@@ -71,10 +74,78 @@ export const CompareChart = memo(function CompareChart({ transactions }: Compare
     );
   }
 
-  const chartData = [
-    { name: current.label, Pemasukan: current.pemasukan, Pengeluaran: current.pengeluaran },
-    { name: previous.label, Pemasukan: previous.pemasukan, Pengeluaran: previous.pengeluaran },
-  ];
+  const data = {
+    labels: [current.label, previous.label],
+    datasets: [
+      {
+        label: 'Pemasukan',
+        data: [current.pemasukan, previous.pemasukan],
+        backgroundColor: '#0EA5E9',
+        borderRadius: 6,
+        barPercentage: 0.65,
+      },
+      {
+        label: 'Pengeluaran',
+        data: [current.pengeluaran, previous.pengeluaran],
+        backgroundColor: '#DC2626',
+        borderRadius: 6,
+        barPercentage: 0.65,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false as const,
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+          padding: 16,
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+        },
+      },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: 500 },
+        bodyFont: { family: 'Plus Jakarta Sans', size: 12, weight: 500 },
+        padding: 10,
+        cornerRadius: 12,
+        callbacks: {
+          label: (ctx: { dataset: { label?: string }; parsed: { y: number | null } }) => {
+            const val = ctx.parsed.y;
+            return ` ${ctx.dataset.label}: ${val !== null ? formatCurrency(val) : '-'}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+        },
+      },
+      y: {
+        grid: { color: '#E7E5E4', drawBorder: false },
+        border: { display: false },
+        ticks: {
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+          callback: (value: number | string) => {
+            const num = typeof value === 'string' ? parseFloat(value) : value;
+            return num >= 1000000 ? `${(num / 1000000).toFixed(0)}jt` : `${(num / 1000).toFixed(0)}rb`;
+          },
+        },
+      },
+    },
+  };
 
   return (
     <div className="space-y-3">
@@ -95,47 +166,8 @@ export const CompareChart = memo(function CompareChart({ transactions }: Compare
         </div>
       </div>
 
-      <div className="w-full min-h-[200px]">
-        <ResponsiveContainer width="100%" height={200} minWidth={0}>
-          <BarChart data={chartData} barCategoryGap="35%">
-            <CartesianGrid strokeDasharray="3 3" stroke="#E7E5E4" vertical={false} />
-            <XAxis
-              dataKey="name"
-              tick={{ fontSize: 11, fill: '#78716C', fontFamily: 'Plus Jakarta Sans', fontWeight: 500 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              tick={{ fontSize: 11, fill: '#78716C', fontFamily: 'Plus Jakarta Sans', fontWeight: 500 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(value: number) =>
-                value >= 1000000 ? `${(value / 1000000).toFixed(0)}jt` : `${(value / 1000).toFixed(0)}rb`
-              }
-            />
-            <Tooltip
-              formatter={(value) => formatCurrency(Number(value))}
-              contentStyle={{
-                backgroundColor: '#1C1917',
-                border: 'none',
-                borderRadius: '12px',
-                color: '#FAFAF9',
-                fontSize: '12px',
-                fontFamily: 'Plus Jakarta Sans',
-                fontWeight: 500,
-              }}
-            />
-            <Legend
-              iconType="circle"
-              iconSize={8}
-              formatter={(value: string) => (
-                <span className="text-[11px] font-medium text-text dark:text-text-dark">{value}</span>
-              )}
-            />
-            <Bar dataKey="Pemasukan" fill="#0EA5E9" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-            <Bar dataKey="Pengeluaran" fill="#DC2626" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="w-full h-[200px]">
+        <Bar data={data} options={options} />
       </div>
     </div>
   );

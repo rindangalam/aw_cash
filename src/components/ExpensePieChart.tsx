@@ -1,9 +1,12 @@
 import { memo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { getCategoryById } from '../lib/constants';
 import { formatCurrency } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
 import type { Transaction } from '../types';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 interface ExpensePieChartProps {
   transactions: Transaction[];
@@ -11,11 +14,10 @@ interface ExpensePieChartProps {
   year: number;
 }
 
-interface ChartData {
+interface ChartDataItem {
   name: string;
   value: number;
   color: string;
-  icon: string;
 }
 
 export const ExpensePieChart = memo(function ExpensePieChart({ transactions, month, year }: ExpensePieChartProps) {
@@ -30,19 +32,18 @@ export const ExpensePieChart = memo(function ExpensePieChart({ transactions, mon
       return acc;
     }, {});
 
-  const chartData: ChartData[] = Object.entries(expenseData)
+  const chartDataItems: ChartDataItem[] = Object.entries(expenseData)
     .map(([category, value]) => {
       const cat = getCategoryById(category);
       return {
         name: cat?.name || category,
         value,
         color: cat?.color || '#78716C',
-        icon: cat?.icon || 'Package',
       };
     })
     .sort((a, b) => b.value - a.value);
 
-  if (chartData.length === 0) {
+  if (chartDataItems.length === 0) {
     return (
       <div className="text-center py-8">
         <div className="w-14 h-14 rounded-2xl bg-surface-alt dark:bg-surface-alt-dark flex items-center justify-center mx-auto mb-3">
@@ -53,45 +54,52 @@ export const ExpensePieChart = memo(function ExpensePieChart({ transactions, mon
     );
   }
 
+  const data = {
+    labels: chartDataItems.map((d) => d.name),
+    datasets: [
+      {
+        data: chartDataItems.map((d) => d.value),
+        backgroundColor: chartDataItems.map((d) => d.color),
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverBorderWidth: 3,
+        hoverOffset: 6,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false as const,
+    cutout: '55%',
+    plugins: {
+      legend: {
+        position: 'bottom' as const,
+        labels: {
+          usePointStyle: true,
+          pointStyle: 'circle',
+          padding: 12,
+          font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
+          color: '#78716C',
+        },
+      },
+      tooltip: {
+        backgroundColor: '#1C1917',
+        titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: 500 },
+        bodyFont: { family: 'Plus Jakarta Sans', size: 12, weight: 500 },
+        padding: 10,
+        cornerRadius: 12,
+        callbacks: {
+          label: (ctx: { label: string; parsed: number }) => ` ${ctx.label}: ${formatCurrency(ctx.parsed)}`,
+        },
+      },
+    },
+  };
+
   return (
-    <div className="w-full min-h-[280px]">
-      <ResponsiveContainer width="100%" height={280} minWidth={0}>
-        <PieChart>
-          <Pie
-            data={chartData}
-            cx="50%"
-            cy="40%"
-            innerRadius={50}
-            outerRadius={80}
-            paddingAngle={2}
-            dataKey="value"
-            isAnimationActive={false}
-          >
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(value) => formatCurrency(Number(value))}
-            contentStyle={{
-              backgroundColor: '#1C1917',
-              border: 'none',
-              borderRadius: '12px',
-              color: '#FAFAF9',
-              fontSize: '12px',
-              fontFamily: 'Plus Jakarta Sans',
-              fontWeight: 500,
-            }}
-          />
-          <Legend
-            iconType="circle"
-            iconSize={8}
-            formatter={(value: string) => (
-              <span className="text-[11px] font-medium text-text dark:text-text-dark">{value}</span>
-            )}
-          />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="w-full h-[280px]">
+      <Doughnut data={data} options={options} />
     </div>
   );
 });
