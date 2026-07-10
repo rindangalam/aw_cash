@@ -49,5 +49,6 @@ export interface SavingsRecord {
   type: 'setor' | 'ambil';
   note?: string;
   date: string;
+  transactionId?: number;
   createdAt: string;
 }

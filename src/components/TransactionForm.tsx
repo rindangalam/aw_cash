@@ -135,12 +135,11 @@ export function TransactionForm({
         {/* Amount */}
         <Input
           label="Nominal"
-          type="number"
+          currency
           placeholder="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           error={errors.amount}
-          min="1"
         />
 
         {/* Date */}

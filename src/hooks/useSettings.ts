@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import db from '../lib/db';
-import type { Transaction, Budget, Setting } from '../types';
+import type { Transaction, Budget, Setting, SavingsGoal, SavingsRecord } from '../types';
 
 export function useSettings() {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -48,14 +48,18 @@ export function useSettings() {
     const transactions = await db.transactions.toArray();
     const budgets = await db.budgets.toArray();
     const settingsData = await db.settings.toArray();
+    const savingsGoals = await db.savingsGoals.toArray();
+    const savingsRecords = await db.savingsRecords.toArray();
 
     const backup = {
-      version: 1,
+      version: 2,
       createdAt: new Date().toISOString(),
       data: {
         transactions,
         budgets,
         settings: settingsData,
+        savingsGoals,
+        savingsRecords,
       },
     };
 
@@ -71,6 +75,8 @@ export function useSettings() {
             transactions: Transaction[];
             budgets: Budget[];
             settings: Setting[];
+            savingsGoals?: SavingsGoal[];
+            savingsRecords?: SavingsRecord[];
           };
         };
 
@@ -78,31 +84,58 @@ export function useSettings() {
           return { success: false, message: 'Format file tidak valid' };
         }
 
-        await db.transaction('rw', db.transactions, db.budgets, db.settings, async () => {
-          await db.transactions.clear();
-          await db.budgets.clear();
-          await db.settings.clear();
+        await db.transaction(
+          'rw',
+          db.transactions,
+          db.budgets,
+          db.settings,
+          db.savingsGoals,
+          db.savingsRecords,
+          async () => {
+            await db.transactions.clear();
+            await db.budgets.clear();
+            await db.settings.clear();
+            await db.savingsGoals.clear();
+            await db.savingsRecords.clear();
 
-          if (backup.data.transactions.length > 0) {
-            await db.transactions.bulkAdd(
-              backup.data.transactions.map((t) => ({
-                ...t,
-                id: undefined,
-              }))
-            );
+            if (backup.data.transactions.length > 0) {
+              await db.transactions.bulkAdd(
+                backup.data.transactions.map((t) => ({
+                  ...t,
+                  id: undefined,
+                }))
+              );
+            }
+            if (backup.data.budgets.length > 0) {
+              await db.budgets.bulkAdd(
+                backup.data.budgets.map((b) => ({
+                  ...b,
+                  id: undefined,
+                }))
+              );
+            }
+            if (backup.data.settings.length > 0) {
+              await db.settings.bulkAdd(backup.data.settings);
+            }
+            if (backup.data.savingsGoals && backup.data.savingsGoals.length > 0) {
+              await db.savingsGoals.bulkAdd(
+                backup.data.savingsGoals.map((g) => ({
+                  ...g,
+                  id: undefined,
+                }))
+              );
+            }
+            if (backup.data.savingsRecords && backup.data.savingsRecords.length > 0) {
+              await db.savingsRecords.bulkAdd(
+                backup.data.savingsRecords.map((r) => ({
+                  ...r,
+                  id: undefined,
+                  transactionId: undefined,
+                }))
+              );
+            }
           }
-          if (backup.data.budgets.length > 0) {
-            await db.budgets.bulkAdd(
-              backup.data.budgets.map((b) => ({
-                ...b,
-                id: undefined,
-              }))
-            );
-          }
-          if (backup.data.settings.length > 0) {
-            await db.settings.bulkAdd(backup.data.settings);
-          }
-        });
+        );
 
         await loadSettings();
         return { success: true, message: 'Data berhasil dipulihkan' };

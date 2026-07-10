@@ -102,12 +102,11 @@ export function BudgetForm({
         {/* Amount */}
         <Input
           label="Budget Nominal"
-          type="number"
+          currency
           placeholder="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           error={errors.amount}
-          min="1"
         />
 
         {/* Actions */}

@@ -10,10 +10,11 @@ interface SavingsRecordFormProps {
   onClose: () => void;
   onSave: (data: Omit<SavingsRecord, 'id' | 'createdAt'>) => void;
   goalId: number;
+  defaultType?: 'setor' | 'ambil';
 }
 
-export function SavingsRecordForm({ isOpen, onClose, onSave, goalId }: SavingsRecordFormProps) {
-  const [type, setType] = useState<'setor' | 'ambil'>('setor');
+export function SavingsRecordForm({ isOpen, onClose, onSave, goalId, defaultType = 'setor' }: SavingsRecordFormProps) {
+  const [type, setType] = useState<'setor' | 'ambil'>(defaultType);
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [date, setDate] = useState(getTodayISO());
@@ -30,40 +31,16 @@ export function SavingsRecordForm({ isOpen, onClose, onSave, goalId }: SavingsRe
     setAmount('');
     setNote('');
     setDate(getTodayISO());
-    setType('setor');
+    setType(defaultType);
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Catat Tabungan">
+    <Modal isOpen={isOpen} onClose={onClose} title={type === 'setor' ? 'Setor Tabungan' : 'Ambil Tabungan'}>
       <div className="space-y-4">
-        {/* Type Toggle */}
-        <div className="flex gap-2">
-          <button
-            onClick={() => setType('setor')}
-            className={`flex-1 py-3 rounded-xl text-[13px] font-bold transition-all cursor-pointer border-2 ${
-              type === 'setor'
-                ? 'bg-primary/10 border-primary text-primary'
-                : 'bg-surface-alt dark:bg-surface-alt-dark border-transparent text-text-secondary dark:text-text-secondary-dark'
-            }`}
-          >
-            Setor
-          </button>
-          <button
-            onClick={() => setType('ambil')}
-            className={`flex-1 py-3 rounded-xl text-[13px] font-bold transition-all cursor-pointer border-2 ${
-              type === 'ambil'
-                ? 'bg-danger/10 border-danger text-danger'
-                : 'bg-surface-alt dark:bg-surface-alt-dark border-transparent text-text-secondary dark:text-text-secondary-dark'
-            }`}
-          >
-            Ambil
-          </button>
-        </div>
-
         <Input
           label="Jumlah"
-          type="number"
+          currency
           placeholder="0"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}

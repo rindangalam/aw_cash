@@ -43,18 +43,18 @@ export function Dashboard() {
     <PageLayout title="AW Cash">
       <div className="space-y-5">
         {/* Hero Saldo */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-teal-800 p-5 text-white shadow-lg shadow-primary/20">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-sky-800 p-5 text-white shadow-lg shadow-primary/20">
           <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/10" />
           <div className="absolute -right-2 bottom-4 w-20 h-20 rounded-full bg-white/5" />
-          <p className="text-[11px] font-medium text-teal-100 uppercase tracking-wider">Saldo Bulan Ini</p>
+          <p className="text-[11px] font-medium text-sky-100 uppercase tracking-wider">Saldo Bulan Ini</p>
           <p className={`text-3xl font-extrabold tracking-tight mt-1.5 tabular-nums ${balance >= 0 ? '' : 'text-red-200'}`}>
             {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(balance)}
           </p>
           <div className="flex gap-6 mt-3">
             <div>
               <div className="flex items-center gap-1.5">
-                <LucideIcon name="ArrowDownRight" size={14} className="text-teal-200" />
-                <span className="text-[11px] font-medium text-teal-200">Pemasukan</span>
+                <LucideIcon name="ArrowDownRight" size={14} className="text-sky-200" />
+                <span className="text-[11px] font-medium text-sky-200">Pemasukan</span>
               </div>
               <p className="text-sm font-bold tabular-nums mt-0.5">
                 {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(monthlyData.income)}
@@ -63,7 +63,7 @@ export function Dashboard() {
             <div>
               <div className="flex items-center gap-1.5">
                 <LucideIcon name="ArrowUpRight" size={14} className="text-red-200" />
-                <span className="text-[11px] font-medium text-teal-200">Pengeluaran</span>
+                <span className="text-[11px] font-medium text-sky-200">Pengeluaran</span>
               </div>
               <p className="text-sm font-bold tabular-nums mt-0.5">
                 {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(monthlyData.expense)}

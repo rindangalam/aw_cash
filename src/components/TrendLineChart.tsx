@@ -96,10 +96,10 @@ export function TrendLineChart({ transactions }: TrendLineChartProps) {
             type="monotone"
             dataKey="pemasukan"
             name="Pemasukan"
-            stroke="#0F766E"
+            stroke="#0EA5E9"
             strokeWidth={2.5}
-            dot={{ r: 4, fill: '#0F766E', strokeWidth: 2, stroke: '#fff' }}
-            activeDot={{ r: 6, fill: '#0F766E' }}
+            dot={{ r: 4, fill: '#0EA5E9', strokeWidth: 2, stroke: '#fff' }}
+            activeDot={{ r: 6, fill: '#0EA5E9' }}
           />
           <Line
             type="monotone"

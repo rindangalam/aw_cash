@@ -14,7 +14,7 @@ export default defineConfig({
         name: 'AW Cash - Kelola Keuangan',
         short_name: 'AW Cash',
         description: 'Aplikasi manajemen keuangan personal offline',
-        theme_color: '#0F766E',
+        theme_color: '#0EA5E9',
         background_color: '#FAFAF9',
         display: 'standalone',
         orientation: 'portrait',

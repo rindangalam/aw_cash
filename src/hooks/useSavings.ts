@@ -40,6 +40,11 @@ export function useSavings() {
 
   const deleteGoal = useCallback(
     async (id: number) => {
+      const records = await db.savingsRecords.where('goalId').equals(id).toArray();
+      const transactionIds = records.filter((r) => r.transactionId).map((r) => r.transactionId!);
+      if (transactionIds.length > 0) {
+        await db.transactions.bulkDelete(transactionIds);
+      }
       await db.savingsRecords.where('goalId').equals(id).delete();
       await db.savingsGoals.delete(id);
       await loadGoals();
@@ -73,9 +78,21 @@ export function useSavings() {
 
   const addRecord = useCallback(
     async (record: Omit<SavingsRecord, 'id' | 'createdAt'>) => {
+      const now = new Date().toISOString();
+
+      const transactionId = await db.transactions.add({
+        type: record.type === 'setor' ? 'expense' : 'income',
+        category: record.type === 'setor' ? 'savings' : 'savings_withdraw',
+        amount: record.amount,
+        date: record.date,
+        note: record.note || `Tabungan: ${record.type === 'setor' ? 'Setor' : 'Ambil'}`,
+        createdAt: now,
+      });
+
       await db.savingsRecords.add({
         ...record,
-        createdAt: new Date().toISOString(),
+        transactionId,
+        createdAt: now,
       });
 
       const goal = await db.savingsGoals.get(record.goalId);
@@ -92,6 +109,10 @@ export function useSavings() {
 
   const deleteRecord = useCallback(
     async (record: SavingsRecord) => {
+      if (record.transactionId) {
+        await db.transactions.delete(record.transactionId);
+      }
+
       await db.savingsRecords.delete(record.id!);
 
       const goal = await db.savingsGoals.get(record.goalId);

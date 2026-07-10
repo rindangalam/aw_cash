@@ -5,6 +5,7 @@ import { LucideIcon } from '../components/ui/LucideIcon';
 import { useTransactions } from '../hooks/useTransactions';
 import { getCategoryById } from '../lib/constants';
 import { getCurrentMonth, getCurrentYear, getMonthName } from '../lib/utils';
+import { exportToExcel } from '../lib/export';
 import type { Transaction } from '../types';
 
 type PeriodType = 'weekly' | 'monthly' | 'yearly';
@@ -64,32 +65,6 @@ function filterByPeriod(
     const date = new Date(t.date);
     return date >= start && date <= end;
   });
-}
-
-function exportToCSV(data: Transaction[]) {
-  const headers = ['Tanggal', 'Tipe', 'Kategori', 'Nominal', 'Catatan'];
-  const rows = data.map((t) => {
-    const cat = getCategoryById(t.category);
-    return [
-      t.date,
-      t.type === 'income' ? 'Pemasukan' : 'Pengeluaran',
-      cat?.name || t.category,
-      t.amount,
-      t.note || '',
-    ];
-  });
-
-  const csvContent =
-    '\uFEFF' +
-    [headers, ...rows].map((row) => row.join(',')).join('\n');
-
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `laporan-aw-cash-${new Date().toISOString().split('T')[0]}.csv`;
-  link.click();
-  URL.revokeObjectURL(url);
 }
 
 const fmt = new Intl.NumberFormat('id-ID', {
@@ -249,7 +224,7 @@ export function Reports() {
 
         {/* Summary Cards */}
         <div className="flex gap-3">
-          <Card className="flex-1" accent="teal">
+          <Card className="flex-1" accent="sky">
             <p className="text-[11px] font-medium text-text-secondary dark:text-text-secondary-dark">
               Pemasukan
             </p>
@@ -381,11 +356,11 @@ export function Reports() {
         {/* Export Button */}
         {filteredTransactions.length > 0 && (
           <button
-            onClick={() => exportToCSV(filteredTransactions)}
+            onClick={() => exportToExcel()}
             className="w-full flex items-center justify-center gap-2 py-3 bg-surface-alt dark:bg-surface-alt-dark text-text dark:text-text-dark rounded-xl font-semibold text-[13px] hover:bg-border dark:hover:bg-border-dark transition-colors cursor-pointer border border-border dark:border-border-dark"
           >
             <LucideIcon name="Download" size={16} />
-            Export ke CSV
+            Export ke Excel
           </button>
         )}
       </div>

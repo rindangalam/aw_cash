@@ -4,11 +4,11 @@ interface CardProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
-  accent?: 'teal' | 'red' | 'amber' | 'violet';
+  accent?: 'sky' | 'red' | 'amber' | 'violet';
 }
 
 const accentBorder = {
-  teal: 'border-l-teal-600',
+  sky: 'border-l-sky-500',
   red: 'border-l-red-500',
   amber: 'border-l-amber-500',
   violet: 'border-l-violet-500',

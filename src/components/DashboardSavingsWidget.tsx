@@ -17,7 +17,7 @@ export function DashboardSavingsWidget() {
     <Card onClick={() => navigate('/savings')} className="cursor-pointer">
       <div className="flex items-center gap-3 mb-3">
         <div className="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center">
-          <LucideIcon name="PiggyBank" size={20} className="text-amber-600 dark:text-amber-400" />
+          <LucideIcon name="ChickenBank" size={20} className="text-amber-600 dark:text-amber-400" />
         </div>
         <div className="flex-1">
           <h3 className="text-[13px] font-semibold text-text dark:text-text-dark">Tabungan</h3>

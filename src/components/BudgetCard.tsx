@@ -16,7 +16,7 @@ export function BudgetCard({ budget, spent, onEdit, onDelete }: BudgetCardProps)
 
   let barColor = 'bg-primary';
   let textColor = 'text-primary';
-  let accent: 'teal' | 'red' | 'amber' = 'teal';
+  let accent: 'sky' | 'red' | 'amber' = 'sky';
   if (isOver) {
     barColor = 'bg-danger';
     textColor = 'text-danger';

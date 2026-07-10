@@ -20,4 +20,8 @@ db.version(2).stores({
   savingsRecords: '++id, goalId, date, createdAt',
 });
 
+db.version(3).stores({
+  savingsRecords: '++id, goalId, transactionId, date, createdAt',
+});
+
 export default db;

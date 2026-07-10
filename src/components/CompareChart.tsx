@@ -132,7 +132,7 @@ export function CompareChart({ transactions }: CompareChartProps) {
                 <span className="text-[11px] font-medium text-text dark:text-text-dark">{value}</span>
               )}
             />
-            <Bar dataKey="Pemasukan" fill="#0F766E" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="Pemasukan" fill="#0EA5E9" radius={[6, 6, 0, 0]} />
             <Bar dataKey="Pengeluaran" fill="#DC2626" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

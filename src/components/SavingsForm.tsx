@@ -49,7 +49,7 @@ export function SavingsForm({ isOpen, onClose, onSave, initial, title = 'Tabunga
         />
         <Input
           label="Target Jumlah"
-          type="number"
+          currency
           placeholder="0"
           value={targetAmount}
           onChange={(e) => setTargetAmount(e.target.value)}

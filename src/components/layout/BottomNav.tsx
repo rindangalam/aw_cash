@@ -5,7 +5,7 @@ const navItems = [
   { to: '/', label: 'Beranda', icon: 'Home' },
   { to: '/transactions', label: 'Transaksi', icon: 'Wallet' },
   { to: '/budget', label: 'Budget', icon: 'PieChart' },
-  { to: '/savings', label: 'Tabungan', icon: 'PiggyBank' },
+  { to: '/savings', label: 'Tabungan', icon: 'ChickenBank' },
   { to: '/reports', label: 'Laporan', icon: 'BarChart3' },
   { to: '/settings', label: 'Lainnya', icon: 'Settings' },
 ];

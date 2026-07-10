@@ -24,6 +24,7 @@ export function SavingsDetail() {
   const [records, setRecords] = useState<SavingsRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRecordForm, setShowRecordForm] = useState(false);
+  const [recordFormType, setRecordFormType] = useState<'setor' | 'ambil'>('setor');
   const [showEditForm, setShowEditForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
@@ -136,13 +137,20 @@ export function SavingsDetail() {
               <Button
                 className="flex-1"
                 icon={<LucideIcon name="ArrowDownLeft" size={16} />}
-                onClick={() => setShowRecordForm(true)}
+                onClick={() => { setRecordFormType('setor'); setShowRecordForm(true); }}
               >
                 Setor
               </Button>
               <Button
-                variant="secondary"
+                variant="danger"
                 className="flex-1"
+                icon={<LucideIcon name="ArrowUpRight" size={16} />}
+                onClick={() => { setRecordFormType('ambil'); setShowRecordForm(true); }}
+              >
+                Ambil
+              </Button>
+              <Button
+                variant="secondary"
                 icon={<LucideIcon name="Pencil" size={16} />}
                 onClick={() => setShowEditForm(true)}
               >
@@ -206,10 +214,12 @@ export function SavingsDetail() {
 
       {/* Forms */}
       <SavingsRecordForm
+        key={recordFormType}
         isOpen={showRecordForm}
         onClose={() => setShowRecordForm(false)}
         onSave={addRecord}
         goalId={goalId}
+        defaultType={recordFormType}
       />
       <SavingsForm
         isOpen={showEditForm}

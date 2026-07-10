@@ -15,13 +15,13 @@ export function SavingsRecordItem({ record, onDelete }: SavingsRecordItemProps) 
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
         style={{
-          backgroundColor: isSetor ? 'rgba(15,118,110,0.1)' : 'rgba(220,38,38,0.1)',
+          backgroundColor: isSetor ? 'rgba(14,165,233,0.1)' : 'rgba(220,38,38,0.1)',
         }}
       >
         <LucideIcon
           name={isSetor ? 'ArrowDownLeft' : 'ArrowUpRight'}
           size={18}
-          style={{ color: isSetor ? '#0F766E' : '#DC2626' }}
+          style={{ color: isSetor ? '#0EA5E9' : '#DC2626' }}
         />
       </div>
       <div className="flex-1 min-w-0">

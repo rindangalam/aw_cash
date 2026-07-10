@@ -62,7 +62,7 @@ export function Savings() {
           ) : activeGoals.length === 0 ? (
             <Card className="text-center py-8">
               <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center mx-auto mb-3">
-                <LucideIcon name="PiggyBank" size={28} className="text-amber-500" />
+                <LucideIcon name="ChickenBank" size={28} className="text-amber-500" />
               </div>
               <p className="text-[13px] font-semibold text-text dark:text-text-dark mb-1">
                 Belum ada tabungan

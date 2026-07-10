@@ -7,6 +7,16 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
+export function formatCurrencyInput(value: string): string {
+  const digits = value.replace(/\D/g, '');
+  if (!digits) return '';
+  return Number(digits).toLocaleString('id-ID');
+}
+
+export function parseCurrencyInput(value: string): string {
+  return value.replace(/\D/g, '');
+}
+
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat('id-ID', {
