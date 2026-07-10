@@ -21,7 +21,7 @@ export function TransactionForm({
   onSave,
   initialData,
 }: TransactionFormProps) {
-  const [type, setType] = useState<'income' | 'expense'>('expense');
+  const [type, setType] = useState<'income' | 'expense'>('income');
   const [category, setCategory] = useState('');
   const [amount, setAmount] = useState('');
   const [date, setDate] = useState(getTodayISO());
@@ -36,7 +36,7 @@ export function TransactionForm({
       setDate(initialData.date);
       setNote(initialData.note || '');
     } else {
-      setType('expense');
+      setType('income');
       setCategory('');
       setAmount('');
       setDate(getTodayISO());
