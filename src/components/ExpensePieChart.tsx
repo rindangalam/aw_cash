@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { getCategoryById } from '../lib/constants';
 import { formatCurrency } from '../lib/utils';
@@ -17,7 +18,7 @@ interface ChartData {
   icon: string;
 }
 
-export function ExpensePieChart({ transactions, month, year }: ExpensePieChartProps) {
+export const ExpensePieChart = memo(function ExpensePieChart({ transactions, month, year }: ExpensePieChartProps) {
   const expenseData = transactions
     .filter((t) => {
       if (t.type !== 'expense') return false;
@@ -53,8 +54,8 @@ export function ExpensePieChart({ transactions, month, year }: ExpensePieChartPr
   }
 
   return (
-    <div className="w-full h-[280px]">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full min-h-[280px]">
+      <ResponsiveContainer width="100%" height={280} minWidth={0}>
         <PieChart>
           <Pie
             data={chartData}
@@ -64,6 +65,7 @@ export function ExpensePieChart({ transactions, month, year }: ExpensePieChartPr
             outerRadius={80}
             paddingAngle={2}
             dataKey="value"
+            isAnimationActive={false}
           >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
@@ -92,4 +94,4 @@ export function ExpensePieChart({ transactions, month, year }: ExpensePieChartPr
       </ResponsiveContainer>
     </div>
   );
-}
+});

@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { formatCurrency, getMonthName } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
@@ -13,33 +14,37 @@ interface MonthData {
   pengeluaran: number;
 }
 
-export function TrendLineChart({ transactions }: TrendLineChartProps) {
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
+export const TrendLineChart = memo(function TrendLineChart({ transactions }: TrendLineChartProps) {
+  const last6Months = useMemo(() => {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const result: MonthData[] = [];
 
-  const last6Months: MonthData[] = [];
-  for (let i = 5; i >= 0; i--) {
-    const date = new Date(currentYear, currentMonth - i, 1);
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const monthName = getMonthName(month).slice(0, 3);
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(currentYear, currentMonth - i, 1);
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const monthName = getMonthName(month).slice(0, 3);
 
-    const monthTransactions = transactions.filter((t) => {
-      const d = new Date(t.date);
-      return d.getMonth() + 1 === month && d.getFullYear() === year;
-    });
+      const monthTransactions = transactions.filter((t) => {
+        const d = new Date(t.date);
+        return d.getMonth() + 1 === month && d.getFullYear() === year;
+      });
 
-    const pemasukan = monthTransactions
-      .filter((t) => t.type === 'income')
-      .reduce((sum, t) => sum + t.amount, 0);
+      const pemasukan = monthTransactions
+        .filter((t) => t.type === 'income')
+        .reduce((sum, t) => sum + t.amount, 0);
 
-    const pengeluaran = monthTransactions
-      .filter((t) => t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      const pengeluaran = monthTransactions
+        .filter((t) => t.type === 'expense')
+        .reduce((sum, t) => sum + t.amount, 0);
 
-    last6Months.push({ month: monthName, pemasukan, pengeluaran });
-  }
+      result.push({ month: monthName, pemasukan, pengeluaran });
+    }
+
+    return result;
+  }, [transactions]);
 
   const hasData = last6Months.some((d) => d.pemasukan > 0 || d.pengeluaran > 0);
 
@@ -55,8 +60,8 @@ export function TrendLineChart({ transactions }: TrendLineChartProps) {
   }
 
   return (
-    <div className="w-full h-[280px]">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full min-h-[280px]">
+      <ResponsiveContainer width="100%" height={280} minWidth={0}>
         <LineChart data={last6Months} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#E7E5E4" vertical={false} />
           <XAxis
@@ -100,6 +105,7 @@ export function TrendLineChart({ transactions }: TrendLineChartProps) {
             strokeWidth={2.5}
             dot={{ r: 4, fill: '#0EA5E9', strokeWidth: 2, stroke: '#fff' }}
             activeDot={{ r: 6, fill: '#0EA5E9' }}
+            isAnimationActive={false}
           />
           <Line
             type="monotone"
@@ -109,9 +115,10 @@ export function TrendLineChart({ transactions }: TrendLineChartProps) {
             strokeWidth={2.5}
             dot={{ r: 4, fill: '#DC2626', strokeWidth: 2, stroke: '#fff' }}
             activeDot={{ r: 6, fill: '#DC2626' }}
+            isAnimationActive={false}
           />
         </LineChart>
       </ResponsiveContainer>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { formatCurrency, getMonthName } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
@@ -38,7 +38,7 @@ function getMonthTotals(transactions: Transaction[], monthOffset: number): Month
   };
 }
 
-export function CompareChart({ transactions }: CompareChartProps) {
+export const CompareChart = memo(function CompareChart({ transactions }: CompareChartProps) {
   const { current, previous, change } = useMemo(() => {
     const cur = getMonthTotals(transactions, 0);
     const prev = getMonthTotals(transactions, 1);
@@ -95,8 +95,8 @@ export function CompareChart({ transactions }: CompareChartProps) {
         </div>
       </div>
 
-      <div className="w-full h-[200px]">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full min-h-[200px]">
+        <ResponsiveContainer width="100%" height={200} minWidth={0}>
           <BarChart data={chartData} barCategoryGap="35%">
             <CartesianGrid strokeDasharray="3 3" stroke="#E7E5E4" vertical={false} />
             <XAxis
@@ -132,11 +132,11 @@ export function CompareChart({ transactions }: CompareChartProps) {
                 <span className="text-[11px] font-medium text-text dark:text-text-dark">{value}</span>
               )}
             />
-            <Bar dataKey="Pemasukan" fill="#0EA5E9" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="Pengeluaran" fill="#DC2626" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="Pemasukan" fill="#0EA5E9" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+            <Bar dataKey="Pengeluaran" fill="#DC2626" radius={[6, 6, 0, 0]} isAnimationActive={false} />
           </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
   );
-}
+});
