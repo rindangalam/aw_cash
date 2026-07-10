@@ -4,6 +4,7 @@ import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { LucideIcon } from './ui/LucideIcon';
 import { EXPENSE_CATEGORIES } from '../lib/constants';
+import { parseCurrencyInput } from '../lib/utils';
 import type { Budget } from '../types';
 
 interface BudgetFormProps {
@@ -51,7 +52,7 @@ export function BudgetForm({
     if (!validate()) return;
     onSave({
       category,
-      amount: Number(amount),
+      amount: Number(parseCurrencyInput(amount)),
       month,
       year,
     });
@@ -71,7 +72,7 @@ export function BudgetForm({
             Kategori
           </label>
           <div className="grid grid-cols-4 gap-2">
-            {EXPENSE_CATEGORIES.map((cat) => (
+            {EXPENSE_CATEGORIES.filter((c) => c.id !== 'savings').map((cat) => (
               <button
                 key={cat.id}
                 type="button"

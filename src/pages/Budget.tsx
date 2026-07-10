@@ -5,11 +5,13 @@ import { BudgetForm } from '../components/BudgetForm';
 import { SpendingAlerts } from '../components/SpendingAlerts';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { Modal } from '../components/ui/Modal';
 
 import { LucideIcon } from '../components/ui/LucideIcon';
 import { useBudget } from '../hooks/useBudget';
 import { useTransactions } from '../hooks/useTransactions';
-import { getCurrentMonth, getCurrentYear, getMonthName } from '../lib/utils';
+import { getCurrentMonth, getCurrentYear, getMonthName, formatCurrency, formatDate } from '../lib/utils';
+import { getCategoryById } from '../lib/constants';
 import type { Budget } from '../types';
 
 export function Budget() {
@@ -24,6 +26,7 @@ export function Budget() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
 
   const loading = transactionsLoading || budgetsLoading;
 
@@ -49,6 +52,18 @@ export function Budget() {
     (sum, b) => sum + (spendingByCategory[b.category] || 0),
     0
   );
+
+  const transactionsForBudget = useMemo(() => {
+    if (!selectedBudget) return [];
+    return transactions.filter((t) => {
+      if (t.type !== 'expense' || t.category !== selectedBudget.category) return false;
+      const date = new Date(t.date);
+      return (
+        date.getMonth() + 1 === selectedMonth &&
+        date.getFullYear() === selectedYear
+      );
+    });
+  }, [transactions, selectedBudget, selectedMonth, selectedYear]);
 
   const handleEdit = (budget: Budget) => {
     setEditingBudget(budget);
@@ -167,6 +182,7 @@ export function Budget() {
                 key={budget.id}
                 budget={budget}
                 spent={spendingByCategory[budget.category] || 0}
+                onClick={() => setSelectedBudget(budget)}
                 onEdit={handleEdit}
                 onDelete={handleDeleteClick}
               />
@@ -200,6 +216,59 @@ export function Budget() {
           title="Hapus Budget"
           message="Apakah kamu yakin ingin menghapus budget ini?"
         />
+
+        {/* Detail Modal */}
+        <Modal
+          isOpen={selectedBudget !== null}
+          onClose={() => setSelectedBudget(null)}
+          title={selectedBudget ? getCategoryById(selectedBudget.category)?.name || selectedBudget.category : ''}
+        >
+          {selectedBudget && (
+            <div className="space-y-3">
+              {transactionsForBudget.length === 0 ? (
+                <p className="text-[13px] text-text-secondary dark:text-text-secondary-dark text-center py-6">
+                  Belum ada transaksi di kategori ini
+                </p>
+              ) : (
+                <>
+                  {transactionsForBudget.map((t) => (
+                    <div key={t.id} className="flex items-center justify-between py-2.5 border-b border-border/50 dark:border-border-dark/50 last:border-0">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: `${getCategoryById(t.category)?.color}15` }}
+                          >
+                            <LucideIcon name={getCategoryById(t.category)?.icon || 'Package'} size={14} className="text-current" style={{ color: getCategoryById(t.category)?.color }} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-medium text-text dark:text-text-dark truncate">
+                              {t.note || getCategoryById(t.category)?.name || t.category}
+                            </p>
+                            <p className="text-[11px] text-text-secondary dark:text-text-secondary-dark">
+                              {formatDate(t.date)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-[13px] font-bold text-danger ml-3 tabular-nums">
+                        -{formatCurrency(t.amount)}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between items-center pt-2 border-t border-border dark:border-border-dark">
+                    <span className="text-[13px] font-medium text-text-secondary dark:text-text-secondary-dark">
+                      Total ({transactionsForBudget.length} transaksi)
+                    </span>
+                    <span className="text-[14px] font-bold text-danger tabular-nums">
+                      {formatCurrency(transactionsForBudget.reduce((sum, t) => sum + t.amount, 0))}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </Modal>
       </div>
     </PageLayout>
   );

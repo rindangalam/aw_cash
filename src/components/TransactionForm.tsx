@@ -4,6 +4,7 @@ import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { LucideIcon } from './ui/LucideIcon';
 import { getCategoriesByType } from '../lib/constants';
+import { parseCurrencyInput } from '../lib/utils';
 import { getTodayISO } from '../lib/utils';
 import type { Transaction } from '../types';
 
@@ -44,7 +45,9 @@ export function TransactionForm({
     setErrors({});
   }, [initialData, isOpen]);
 
-  const categories = getCategoriesByType(type);
+  const categories = getCategoriesByType(type).filter(
+    (c) => c.id !== 'savings' && c.id !== 'savings_withdraw'
+  );
 
   const validate = (): boolean => {
     const newErrors: { category?: string; amount?: string } = {};
@@ -60,7 +63,7 @@ export function TransactionForm({
     onSave({
       type,
       category,
-      amount: Number(amount),
+      amount: Number(parseCurrencyInput(amount)),
       date,
       note: note || undefined,
     });
@@ -81,7 +84,7 @@ export function TransactionForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Type Toggle */}
         <div className="flex gap-2 p-1 bg-surface-alt dark:bg-surface-alt-dark rounded-xl">
-          {(['expense', 'income'] as const).map((t) => (
+          {(['income', 'expense'] as const).map((t) => (
             <button
               key={t}
               type="button"

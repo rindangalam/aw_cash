@@ -3,6 +3,7 @@ import { Modal } from './ui/Modal';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { LucideIcon } from './ui/LucideIcon';
+import { parseCurrencyInput } from '../lib/utils';
 import { SAVINGS_GOAL_ICONS, SAVINGS_GOAL_COLORS } from '../lib/constants';
 import type { SavingsGoal } from '../types';
 
@@ -25,7 +26,7 @@ export function SavingsForm({ isOpen, onClose, onSave, initial, title = 'Tabunga
     if (!name.trim() || !targetAmount) return;
     onSave({
       name: name.trim(),
-      targetAmount: Number(targetAmount),
+      targetAmount: Number(parseCurrencyInput(targetAmount)),
       icon,
       color,
       deadline: deadline || undefined,

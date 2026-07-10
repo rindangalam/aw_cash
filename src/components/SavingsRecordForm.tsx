@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Modal } from './ui/Modal';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
-import { getTodayISO } from '../lib/utils';
+import { getTodayISO, parseCurrencyInput } from '../lib/utils';
 import type { SavingsRecord } from '../types';
 
 interface SavingsRecordFormProps {
@@ -20,10 +20,10 @@ export function SavingsRecordForm({ isOpen, onClose, onSave, goalId, defaultType
   const [date, setDate] = useState(getTodayISO());
 
   const handleSave = () => {
-    if (!amount || Number(amount) <= 0) return;
+    if (!amount || Number(parseCurrencyInput(amount)) <= 0) return;
     onSave({
       goalId,
-      amount: Number(amount),
+      amount: Number(parseCurrencyInput(amount)),
       type,
       note: note.trim() || undefined,
       date,

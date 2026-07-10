@@ -1,16 +1,18 @@
 import { Card } from './ui/Card';
 import { LucideIcon } from './ui/LucideIcon';
+import { getCategoryById } from '../lib/constants';
 import { formatCurrency } from '../lib/utils';
 import type { Budget } from '../types';
 
 interface BudgetCardProps {
   budget: Budget;
   spent: number;
+  onClick?: () => void;
   onEdit: (budget: Budget) => void;
   onDelete: (id: number) => void;
 }
 
-export function BudgetCard({ budget, spent, onEdit, onDelete }: BudgetCardProps) {
+export function BudgetCard({ budget, spent, onClick, onEdit, onDelete }: BudgetCardProps) {
   const percentage = Math.min((spent / budget.amount) * 100, 100);
   const isOver = spent > budget.amount;
 
@@ -28,10 +30,10 @@ export function BudgetCard({ budget, spent, onEdit, onDelete }: BudgetCardProps)
   }
 
   return (
-    <Card accent={accent}>
+    <Card accent={accent} onClick={onClick}>
       <div className="flex items-center justify-between mb-2.5">
         <span className="font-semibold text-[13px] text-text dark:text-text-dark">
-          {budget.category}
+          {getCategoryById(budget.category)?.name || budget.category}
         </span>
         <div className="flex gap-0.5">
           <button
