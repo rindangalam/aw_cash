@@ -5,20 +5,53 @@ import { SavingsGoalCard } from '../components/SavingsGoalCard';
 import { SavingsForm } from '../components/SavingsForm';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { LucideIcon } from '../components/ui/LucideIcon';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { useSavings } from '../hooks/useSavings';
 import { formatCurrency } from '../lib/utils';
+import type { SavingsGoal } from '../types';
 
 export function Savings() {
-  const { goals, loading, addGoal, totalSavings, totalTarget } = useSavings();
+  const { goals, loading, addGoal, updateGoal, deleteGoal, togglePinGoal, totalSavings, totalTarget } = useSavings();
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<SavingsGoal | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const activeGoals = goals.filter((g) => !g.closed);
   const closedGoals = goals.filter((g) => g.closed);
 
   const overallProgress = totalTarget > 0 ? (totalSavings / totalTarget) * 100 : 0;
+
+  const handleEdit = (goal: SavingsGoal) => {
+    setEditingGoal(goal);
+    setShowForm(true);
+  };
+
+  const handleSave = async (data: Omit<SavingsGoal, 'id' | 'currentAmount' | 'closed' | 'createdAt'>) => {
+    if (editingGoal?.id) {
+      await updateGoal(editingGoal.id, data);
+    } else {
+      await addGoal(data);
+    }
+    setShowForm(false);
+    setEditingGoal(null);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingGoal(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTarget?.id) {
+      await deleteGoal(deleteTarget.id);
+    }
+    setDeleteTarget(null);
+    setShowDeleteConfirm(false);
+  };
 
   return (
     <PageLayout title="Tabungan">
@@ -81,7 +114,14 @@ export function Savings() {
           ) : (
             <div className="space-y-3">
               {activeGoals.map((goal) => (
-                <SavingsGoalCard key={goal.id} goal={goal} onClick={() => navigate(`/savings/${goal.id}`)} />
+                <SavingsGoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onClick={() => navigate(`/savings/${goal.id}`)}
+                  onEdit={() => handleEdit(goal)}
+                  onTogglePin={() => togglePinGoal(goal.id!)}
+                  onDelete={() => { setDeleteTarget(goal); setShowDeleteConfirm(true); }}
+                />
               ))}
             </div>
           )}
@@ -95,14 +135,37 @@ export function Savings() {
             </h3>
             <div className="space-y-3">
               {closedGoals.map((goal) => (
-                <SavingsGoalCard key={goal.id} goal={goal} onClick={() => navigate(`/savings/${goal.id}`)} />
+                <SavingsGoalCard
+                  key={goal.id}
+                  goal={goal}
+                  onClick={() => navigate(`/savings/${goal.id}`)}
+                  onEdit={() => handleEdit(goal)}
+                  onTogglePin={() => togglePinGoal(goal.id!)}
+                  onDelete={() => { setDeleteTarget(goal); setShowDeleteConfirm(true); }}
+                />
               ))}
             </div>
           </div>
         )}
       </div>
 
-      <SavingsForm isOpen={showForm} onClose={() => setShowForm(false)} onSave={addGoal} />
+      <SavingsForm
+        key={editingGoal?.id ?? 'new'}
+        isOpen={showForm}
+        onClose={handleCloseForm}
+        onSave={handleSave}
+        initial={editingGoal || undefined}
+        title={editingGoal ? 'Edit Tabungan' : 'Buat Tabungan'}
+      />
+
+      {/* Delete Confirm */}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        onClose={() => { setShowDeleteConfirm(false); setDeleteTarget(null); }}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Tabungan?"
+        message={deleteTarget ? `Semua catatan untuk "${deleteTarget.name}" juga akan dihapus.` : ''}
+      />
     </PageLayout>
   );
 }

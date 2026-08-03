@@ -39,6 +39,7 @@ export interface SavingsGoal {
   color: string;
   deadline?: string;
   closed: boolean;
+  pinned?: boolean;
   createdAt: string;
 }
 

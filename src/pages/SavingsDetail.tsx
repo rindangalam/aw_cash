@@ -4,7 +4,6 @@ import { Header } from '../components/layout/Header';
 import { BottomNav } from '../components/layout/BottomNav';
 import { SavingsRecordItem } from '../components/SavingsRecordItem';
 import { SavingsRecordForm } from '../components/SavingsRecordForm';
-import { SavingsForm } from '../components/SavingsForm';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { LucideIcon } from '../components/ui/LucideIcon';
@@ -18,15 +17,13 @@ import type { SavingsGoal, SavingsRecord } from '../types';
 export function SavingsDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { goals, updateGoal, deleteGoal, closeGoal, reopenGoal, getRecords, addRecord, deleteRecord } = useSavings();
+  const { goals, closeGoal, reopenGoal, getRecords, addRecord, deleteRecord } = useSavings();
 
   const [goal, setGoal] = useState<SavingsGoal | null>(null);
   const [records, setRecords] = useState<SavingsRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [showRecordForm, setShowRecordForm] = useState(false);
   const [recordFormType, setRecordFormType] = useState<'setor' | 'ambil'>('setor');
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
   const goalId = Number(id);
@@ -71,10 +68,6 @@ export function SavingsDetail() {
   const daysLeft = goal.deadline
     ? Math.max(0, Math.ceil((new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : null;
-
-  const handleUpdateGoal = (data: Omit<SavingsGoal, 'id' | 'currentAmount' | 'closed' | 'createdAt'>) => {
-    updateGoal(goalId, data);
-  };
 
   return (
     <>
@@ -133,31 +126,27 @@ export function SavingsDetail() {
 
           {/* Actions */}
           {!goal.closed && (
-            <div className="flex gap-2">
-              <Button
-                className="flex-1"
-                icon={<LucideIcon name="ArrowDownLeft" size={16} />}
-                onClick={() => { setRecordFormType('setor'); setShowRecordForm(true); }}
-              >
-                Setor
-              </Button>
-              <Button
-                variant="danger"
-                className="flex-1"
-                icon={<LucideIcon name="ArrowUpRight" size={16} />}
-                onClick={() => { setRecordFormType('ambil'); setShowRecordForm(true); }}
-              >
-                Ambil
-              </Button>
-              <Button
-                variant="secondary"
-                icon={<LucideIcon name="Pencil" size={16} />}
-                onClick={() => setShowEditForm(true)}
-              >
-                Edit
-              </Button>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <Button
+                  className="flex-1"
+                  icon={<LucideIcon name="ArrowDownLeft" size={16} />}
+                  onClick={() => { setRecordFormType('setor'); setShowRecordForm(true); }}
+                >
+                  Setor
+                </Button>
+                <Button
+                  variant="danger"
+                  className="flex-1"
+                  icon={<LucideIcon name="ArrowUpRight" size={16} />}
+                  onClick={() => { setRecordFormType('ambil'); setShowRecordForm(true); }}
+                >
+                  Ambil
+                </Button>
+              </div>
               <Button
                 variant="secondary"
+                className="w-full"
                 icon={<LucideIcon name="Check" size={16} />}
                 onClick={() => setShowCloseConfirm(true)}
               >
@@ -166,23 +155,14 @@ export function SavingsDetail() {
             </div>
           )}
           {goal.closed && (
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                className="flex-1"
-                icon={<LucideIcon name="RotateCcw" size={16} />}
-                onClick={() => reopenGoal(goalId)}
-              >
-                Buka Kembali
-              </Button>
-              <Button
-                variant="danger"
-                icon={<LucideIcon name="Trash2" size={16} />}
-                onClick={() => setShowDeleteConfirm(true)}
-              >
-                Hapus
-              </Button>
-            </div>
+            <Button
+              variant="secondary"
+              className="w-full"
+              icon={<LucideIcon name="RotateCcw" size={16} />}
+              onClick={() => reopenGoal(goalId)}
+            >
+              Buka Kembali
+            </Button>
           )}
         </Card>
 
@@ -220,23 +200,6 @@ export function SavingsDetail() {
         onSave={addRecord}
         goalId={goalId}
         defaultType={recordFormType}
-      />
-      <SavingsForm
-        isOpen={showEditForm}
-        onClose={() => setShowEditForm(false)}
-        onSave={handleUpdateGoal}
-        initial={goal}
-        title="Edit Tabungan"
-      />
-      <ConfirmDialog
-        isOpen={showDeleteConfirm}
-        onClose={() => setShowDeleteConfirm(false)}
-        onConfirm={() => {
-          deleteGoal(goalId);
-          navigate('/savings');
-        }}
-        title="Hapus Tabungan?"
-        message={`Semua catatan untuk "${goal.name}" juga akan dihapus.`}
       />
       <ConfirmDialog
         isOpen={showCloseConfirm}

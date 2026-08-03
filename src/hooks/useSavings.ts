@@ -9,7 +9,8 @@ export function useSavings() {
   const loadGoals = useCallback(async () => {
     setLoading(true);
     const data = await db.savingsGoals.orderBy('createdAt').reverse().toArray();
-    setGoals(data);
+    const sorted = [...data].sort((a, b) => Number(b.pinned) - Number(a.pinned));
+    setGoals(sorted);
     setLoading(false);
   }, []);
 
@@ -64,6 +65,17 @@ export function useSavings() {
     async (id: number) => {
       await db.savingsGoals.update(id, { closed: false });
       await loadGoals();
+    },
+    [loadGoals]
+  );
+
+  const togglePinGoal = useCallback(
+    async (id: number) => {
+      const goal = await db.savingsGoals.get(id);
+      if (goal) {
+        await db.savingsGoals.update(id, { pinned: !goal.pinned });
+        await loadGoals();
+      }
     },
     [loadGoals]
   );
@@ -143,6 +155,7 @@ export function useSavings() {
     deleteGoal,
     closeGoal,
     reopenGoal,
+    togglePinGoal,
     getRecords,
     addRecord,
     deleteRecord,

@@ -7,9 +7,12 @@ import type { SavingsGoal } from '../types';
 interface SavingsGoalCardProps {
   goal: SavingsGoal;
   onClick: () => void;
+  onEdit: () => void;
+  onTogglePin: () => void;
+  onDelete: () => void;
 }
 
-export function SavingsGoalCard({ goal, onClick }: SavingsGoalCardProps) {
+export function SavingsGoalCard({ goal, onClick, onEdit, onTogglePin, onDelete }: SavingsGoalCardProps) {
   const progress = goal.targetAmount > 0
     ? Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)
     : 0;
@@ -43,13 +46,37 @@ export function SavingsGoalCard({ goal, onClick }: SavingsGoalCardProps) {
             </span>
           </div>
         </div>
-        {daysLeft !== null && !goal.closed && (
-          <div className="text-right shrink-0">
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <div className="flex gap-0.5">
+            <button
+              onClick={(e) => { e.stopPropagation(); onEdit(); }}
+              className="p-2 rounded-xl hover:bg-surface-alt dark:hover:bg-surface-alt-dark text-text-secondary dark:text-text-secondary-dark transition-colors cursor-pointer"
+            >
+              <LucideIcon name="Pencil" size={14} />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onTogglePin(); }}
+              className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                goal.pinned
+                  ? 'text-amber-500 bg-amber-500/10'
+                  : 'text-text-secondary dark:text-text-secondary-dark hover:bg-surface-alt dark:hover:bg-surface-alt-dark'
+              }`}
+            >
+              <LucideIcon name="Pin" size={14} className="rotate-45" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); onDelete(); }}
+              className="p-2 rounded-xl text-text-secondary dark:text-text-secondary-dark hover:bg-danger/10 hover:text-danger transition-colors cursor-pointer"
+            >
+              <LucideIcon name="Trash2" size={14} />
+            </button>
+          </div>
+          {daysLeft !== null && !goal.closed && (
             <p className="text-[11px] font-semibold text-text-secondary dark:text-text-secondary-dark">
               {daysLeft} hari
             </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Progress Bar */}
