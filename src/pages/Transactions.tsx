@@ -8,6 +8,7 @@ import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { LucideIcon } from '../components/ui/LucideIcon';
 import { useTransactions } from '../hooks/useTransactions';
 import { getCurrentMonth, getCurrentYear, getMonthName } from '../lib/utils';
+import { getCategoryById } from '../lib/constants';
 import type { Transaction } from '../types';
 
 type FilterType = 'all' | 'income' | 'expense';
@@ -19,6 +20,7 @@ export function Transactions() {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [formLockedType, setFormLockedType] = useState<'income' | 'expense' | undefined>(undefined);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [filterType, setFilterType] = useState<FilterType>('all');
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
@@ -34,16 +36,25 @@ export function Transactions() {
 
       const matchType = filterType === 'all' || t.type === filterType;
       const matchMonth = tMonth === selectedMonth && tYear === selectedYear;
+      const query = searchQuery.toLowerCase();
       const matchSearch =
         !searchQuery ||
-        t.note?.toLowerCase().includes(searchQuery.toLowerCase());
+        t.note?.toLowerCase().includes(query) ||
+        getCategoryById(t.category)?.name.toLowerCase().includes(query);
 
       return matchType && matchMonth && matchSearch;
     });
   }, [transactions, filterType, selectedMonth, selectedYear, searchQuery]);
 
   const handleEdit = (transaction: Transaction) => {
+    setFormLockedType(undefined);
     setEditingTransaction(transaction);
+    setIsFormOpen(true);
+  };
+
+  const handleOpenAdd = (lockedType?: 'income' | 'expense') => {
+    setFormLockedType(lockedType);
+    setEditingTransaction(null);
     setIsFormOpen(true);
   };
 
@@ -70,6 +81,7 @@ export function Transactions() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingTransaction(null);
+    setFormLockedType(undefined);
   };
 
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -176,12 +188,18 @@ export function Transactions() {
         )}
 
         {/* FAB */}
-        <button
-          onClick={() => setIsFormOpen(true)}
-          className="fixed bottom-20 right-4 w-14 h-14 bg-primary hover:bg-primary-light text-white rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center transition-all duration-200 cursor-pointer z-30 active:scale-95"
-        >
-          <LucideIcon name="Plus" size={24} className="text-white" />
-        </button>
+        {(viewMode === 'calendar' || filterType !== 'all') && (
+          <button
+            onClick={() => handleOpenAdd(viewMode === 'list' && filterType !== 'all' ? filterType : undefined)}
+            className={`fixed bottom-20 right-4 w-14 h-14 text-white rounded-2xl shadow-lg flex items-center justify-center transition-all duration-200 cursor-pointer z-30 active:scale-95 ${
+              viewMode === 'list' && filterType === 'expense'
+                ? 'bg-danger hover:bg-red-400 active:bg-danger-dark shadow-danger/20'
+                : 'bg-primary hover:bg-primary-light active:bg-primary-dark shadow-primary/30'
+            }`}
+          >
+            <LucideIcon name="Plus" size={24} className="text-white" />
+          </button>
+        )}
 
         {/* Form Modal */}
         <TransactionForm
@@ -189,6 +207,7 @@ export function Transactions() {
           onClose={handleCloseForm}
           onSave={handleSave}
           initialData={editingTransaction}
+          lockedType={formLockedType}
         />
 
         {/* Confirm Dialog */}

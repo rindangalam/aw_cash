@@ -13,6 +13,7 @@ interface TransactionFormProps {
   onClose: () => void;
   onSave: (data: Omit<Transaction, 'id' | 'createdAt'>) => void;
   initialData?: Transaction | null;
+  lockedType?: 'income' | 'expense';
 }
 
 export function TransactionForm({
@@ -20,6 +21,7 @@ export function TransactionForm({
   onClose,
   onSave,
   initialData,
+  lockedType,
 }: TransactionFormProps) {
   const [type, setType] = useState<'income' | 'expense'>('income');
   const [category, setCategory] = useState('');
@@ -27,6 +29,8 @@ export function TransactionForm({
   const [date, setDate] = useState(getTodayISO());
   const [note, setNote] = useState('');
   const [errors, setErrors] = useState<{ category?: string; amount?: string }>({});
+
+  const isLocked = !!lockedType && !initialData;
 
   useEffect(() => {
     if (initialData) {
@@ -36,14 +40,14 @@ export function TransactionForm({
       setDate(initialData.date);
       setNote(initialData.note || '');
     } else {
-      setType('income');
+      setType(lockedType || 'income');
       setCategory('');
       setAmount('');
       setDate(getTodayISO());
       setNote('');
     }
     setErrors({});
-  }, [initialData, isOpen]);
+  }, [initialData, isOpen, lockedType]);
 
   const categories = getCategoriesByType(type).filter(
     (c) => c.id !== 'savings' && c.id !== 'savings_withdraw'
@@ -83,24 +87,26 @@ export function TransactionForm({
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Type Toggle */}
-        <div className="flex gap-2 p-1 bg-surface-alt dark:bg-surface-alt-dark rounded-xl">
-          {(['income', 'expense'] as const).map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => handleTypeChange(t)}
-              className={`flex-1 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer ${
-                type === t
-                  ? t === 'expense'
-                    ? 'bg-danger text-white shadow-sm shadow-danger/20'
-                    : 'bg-primary text-white shadow-sm shadow-primary/20'
-                  : 'text-text-secondary dark:text-text-secondary-dark hover:text-text dark:hover:text-text-dark'
-              }`}
-            >
-              {t === 'expense' ? 'Pengeluaran' : 'Pemasukan'}
-            </button>
-          ))}
-        </div>
+        {!isLocked && (
+          <div className="flex gap-2 p-1 bg-surface-alt dark:bg-surface-alt-dark rounded-xl">
+            {(['income', 'expense'] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => handleTypeChange(t)}
+                className={`flex-1 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200 cursor-pointer ${
+                  type === t
+                    ? t === 'expense'
+                      ? 'bg-danger text-white shadow-sm shadow-danger/20'
+                      : 'bg-primary text-white shadow-sm shadow-primary/20'
+                    : 'text-text-secondary dark:text-text-secondary-dark hover:text-text dark:hover:text-text-dark'
+                }`}
+              >
+                {t === 'expense' ? 'Pengeluaran' : 'Pemasukan'}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Category Grid */}
         <div>
