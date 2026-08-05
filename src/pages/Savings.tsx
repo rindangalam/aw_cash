@@ -19,6 +19,7 @@ export function Savings() {
   const [editingGoal, setEditingGoal] = useState<SavingsGoal | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<SavingsGoal | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
 
   const activeGoals = goals.filter((g) => !g.closed);
   const closedGoals = goals.filter((g) => g.closed);
@@ -60,17 +61,28 @@ export function Savings() {
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-amber-700 p-5 text-white shadow-lg shadow-amber-500/20">
           <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/10" />
           <div className="absolute -right-2 bottom-4 w-20 h-20 rounded-full bg-white/5" />
-          <p className="text-[11px] font-medium text-amber-100 uppercase tracking-wider">Total Tabungan</p>
-          <p className="text-3xl font-extrabold tracking-tight mt-1.5 tabular-nums">
-            {formatCurrency(totalSavings)}
+          <div className="relative flex items-center justify-between">
+            <p className="text-[11px] font-medium text-amber-100 uppercase tracking-wider">Total Tabungan</p>
+            <button
+              onClick={() => setShowBalance(!showBalance)}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+              aria-label={showBalance ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
+            >
+              <LucideIcon name={showBalance ? 'Eye' : 'EyeOff'} size={16} className="text-amber-100" />
+            </button>
+          </div>
+          <p className="text-3xl font-extrabold tracking-tight mt-3 tabular-nums">
+            {showBalance ? formatCurrency(totalSavings) : 'Rp ••••••'}
           </p>
           <div className="flex items-baseline gap-1.5 mt-1">
             <span className="text-[12px] font-medium text-amber-100">
-              dari {formatCurrency(totalTarget)}
+              {showBalance ? `dari ${formatCurrency(totalTarget)}` : 'dari Rp ••••••'}
             </span>
-            <span className="text-[12px] font-bold text-white">
-              ({overallProgress.toFixed(0)}%)
-            </span>
+            {showBalance && (
+              <span className="text-[12px] font-bold text-white">
+                ({overallProgress.toFixed(0)}%)
+              </span>
+            )}
           </div>
         </div>
 

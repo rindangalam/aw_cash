@@ -25,6 +25,7 @@ export function SavingsDetail() {
   const [showRecordForm, setShowRecordForm] = useState(false);
   const [recordFormType, setRecordFormType] = useState<'setor' | 'ambil'>('setor');
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
+  const [deleteRecordTarget, setDeleteRecordTarget] = useState<SavingsRecord | null>(null);
 
   const goalId = Number(id);
 
@@ -183,7 +184,7 @@ export function SavingsDetail() {
                 <SavingsRecordItem
                   key={record.id}
                   record={record}
-                  onDelete={(r) => deleteRecord(r)}
+                  onDelete={(r) => setDeleteRecordTarget(r)}
                 />
               ))}
             </Card>
@@ -209,6 +210,18 @@ export function SavingsDetail() {
         message={`Tabungan "${goal.name}" akan ditandai sebagai selesai.`}
         confirmLabel="Selesai"
         variant="primary"
+      />
+      <ConfirmDialog
+        isOpen={deleteRecordTarget !== null}
+        onClose={() => setDeleteRecordTarget(null)}
+        onConfirm={() => {
+          if (deleteRecordTarget) {
+            deleteRecord(deleteRecordTarget);
+          }
+          setDeleteRecordTarget(null);
+        }}
+        title="Hapus Catatan?"
+        message="Catatan setor/ambil dan transaksi terkait akan dihapus. Lanjutkan?"
       />
     </>
   );
