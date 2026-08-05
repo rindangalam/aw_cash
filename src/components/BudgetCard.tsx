@@ -37,13 +37,13 @@ export function BudgetCard({ budget, spent, onClick, onEdit, onDelete }: BudgetC
         </span>
         <div className="flex gap-0.5">
           <button
-            onClick={() => onEdit(budget)}
+            onClick={(e) => { e.stopPropagation(); onEdit(budget); }}
             className="p-2 rounded-xl hover:bg-surface-alt dark:hover:bg-surface-alt-dark text-text-secondary dark:text-text-secondary-dark transition-colors cursor-pointer"
           >
             <LucideIcon name="Pencil" size={14} />
           </button>
           <button
-            onClick={() => budget.id && onDelete(budget.id)}
+            onClick={(e) => { e.stopPropagation(); budget.id && onDelete(budget.id); }}
             className="p-2 rounded-xl hover:bg-danger/10 text-text-secondary dark:text-text-secondary-dark hover:text-danger transition-colors cursor-pointer"
           >
             <LucideIcon name="Trash2" size={14} />
