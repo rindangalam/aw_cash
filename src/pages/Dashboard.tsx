@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageLayout } from '../components/layout/PageLayout';
 import { SpendingAlerts } from '../components/SpendingAlerts';
@@ -37,7 +37,28 @@ export function Dashboard() {
       );
   }, [transactions]);
 
-  const balance = monthlyData.income - monthlyData.expense;
+  const overallData = useMemo(() => {
+    return transactions.reduce(
+      (acc, t) => {
+        if (t.type === 'income') acc.income += t.amount;
+        else acc.expense += t.amount;
+        return acc;
+      },
+      { income: 0, expense: 0 }
+    );
+  }, [transactions]);
+
+  const [showOverall, setShowOverall] = useState(false);
+  const [showBalance, setShowBalance] = useState(true);
+
+  const displayData = showOverall ? overallData : monthlyData;
+  const balance = displayData.income - displayData.expense;
+  const masked = 'Rp ••••••';
+  const fmt = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  });
 
   return (
     <PageLayout title="AW Cash">
@@ -46,9 +67,31 @@ export function Dashboard() {
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-sky-800 p-5 text-white shadow-lg shadow-primary/20">
           <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-white/10" />
           <div className="absolute -right-2 bottom-4 w-20 h-20 rounded-full bg-white/5" />
-          <p className="text-[11px] font-medium text-sky-100 uppercase tracking-wider">Saldo Bulan Ini</p>
-          <p className={`text-3xl font-extrabold tracking-tight mt-1.5 tabular-nums ${balance >= 0 ? '' : 'text-red-200'}`}>
-            {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(balance)}
+          <div className="relative flex items-center justify-between">
+            <p className="text-[11px] font-medium text-sky-100 uppercase tracking-wider">
+              {showOverall ? 'Saldo Keseluruhan' : 'Saldo Bulan Ini'}
+            </p>
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setShowBalance(!showBalance)}
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+                aria-label={showBalance ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
+              >
+                <LucideIcon name={showBalance ? 'Eye' : 'EyeOff'} size={16} className="text-sky-100" />
+              </button>
+              <button
+                onClick={() => setShowOverall(!showOverall)}
+                className="flex items-center gap-1.5 pl-2.5 pr-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+              >
+                <LucideIcon name="ArrowLeftRight" size={14} className="text-sky-100" />
+                <span className="text-[11px] font-semibold text-sky-100">
+                  {showOverall ? 'Bulan Ini' : 'Keseluruhan'}
+                </span>
+              </button>
+            </div>
+          </div>
+          <p className={`text-3xl font-extrabold tracking-tight mt-3 tabular-nums ${showBalance && balance >= 0 ? '' : 'text-red-200'}`}>
+            {showBalance ? fmt.format(balance) : masked}
           </p>
           <div className="flex gap-6 mt-3">
             <div>
@@ -57,7 +100,7 @@ export function Dashboard() {
                 <span className="text-[11px] font-medium text-sky-200">Pemasukan</span>
               </div>
               <p className="text-sm font-bold tabular-nums mt-0.5">
-                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(monthlyData.income)}
+                {showBalance ? fmt.format(displayData.income) : masked}
               </p>
             </div>
             <div>
@@ -66,7 +109,7 @@ export function Dashboard() {
                 <span className="text-[11px] font-medium text-sky-200">Pengeluaran</span>
               </div>
               <p className="text-sm font-bold tabular-nums mt-0.5">
-                {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(monthlyData.expense)}
+                {showBalance ? fmt.format(displayData.expense) : masked}
               </p>
             </div>
           </div>
