@@ -27,6 +27,7 @@ export function Budget() {
   const [editingBudget, setEditingBudget] = useState<Budget | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [selectedBudget, setSelectedBudget] = useState<Budget | null>(null);
+  const [showBalance, setShowBalance] = useState(true);
 
   const loading = transactionsLoading || budgetsLoading;
 
@@ -48,10 +49,19 @@ export function Budget() {
   }, [transactions, selectedMonth, selectedYear]);
 
   const totalBudget = budgets.reduce((sum, b) => sum + b.amount, 0);
-  const totalSpent = budgets.reduce(
-    (sum, b) => sum + (spendingByCategory[b.category] || 0),
-    0
-  );
+
+  const monthlyIncome = transactions
+    .filter((t) => {
+      if (t.type !== 'income') return false;
+      const date = new Date(t.date);
+      return (
+        date.getMonth() + 1 === selectedMonth &&
+        date.getFullYear() === selectedYear
+      );
+    })
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const budgetDiff = monthlyIncome - totalBudget;
 
   const transactionsForBudget = useMemo(() => {
     if (!selectedBudget) return [];
@@ -137,28 +147,45 @@ export function Budget() {
 
         {/* Summary */}
         {budgets.length > 0 && (
-          <div className="flex gap-3">
+          <>
+            <div className="flex items-center justify-between">
+              <p className="text-[13px] font-semibold text-text dark:text-text-dark">
+                Ringkasan
+              </p>
+              <button
+                onClick={() => setShowBalance(!showBalance)}
+                className="p-2 -mr-2 rounded-xl hover:bg-surface-alt dark:hover:bg-surface-alt-dark text-text-secondary dark:text-text-secondary-dark transition-colors cursor-pointer"
+                aria-label={showBalance ? 'Sembunyikan saldo' : 'Tampilkan saldo'}
+              >
+                <LucideIcon name={showBalance ? 'Eye' : 'EyeOff'} size={16} />
+              </button>
+            </div>
+            <div className="flex gap-3">
             <div className="flex-1 p-4 bg-surface dark:bg-surface-dark rounded-2xl border border-border/60 dark:border-border-dark/60">
               <p className="text-[11px] font-medium text-text-secondary dark:text-text-secondary-dark">
                 Total Budget
               </p>
               <p className="text-lg font-bold text-text dark:text-text-dark tabular-nums mt-1">
-                {fmt.format(totalBudget)}
+                {showBalance ? fmt.format(totalBudget) : 'Rp ••••••'}
               </p>
             </div>
             <div className="flex-1 p-4 bg-surface dark:bg-surface-dark rounded-2xl border border-border/60 dark:border-border-dark/60">
               <p className="text-[11px] font-medium text-text-secondary dark:text-text-secondary-dark">
-                Terpakai
+                Selisih Budget
               </p>
               <p
                 className={`text-lg font-bold tabular-nums mt-1 ${
-                  totalSpent > totalBudget ? 'text-danger' : 'text-primary'
+                  showBalance && budgetDiff >= 0 ? 'text-primary' : 'text-danger'
                 }`}
               >
-                {fmt.format(totalSpent)}
+                {showBalance ? fmt.format(budgetDiff) : 'Rp ••••••'}
+              </p>
+              <p className="text-[10px] font-medium text-text-secondary dark:text-text-secondary-dark mt-0.5">
+                Pemasukan − Budget
               </p>
             </div>
           </div>
+          </>
         )}
 
         {/* Spending Alerts */}
