@@ -8,7 +8,7 @@ import { getCurrentMonth, getCurrentYear, getMonthName } from '../lib/utils';
 import { exportToExcel } from '../lib/export';
 import type { Transaction } from '../types';
 
-type PeriodType = 'weekly' | 'monthly' | 'yearly';
+type PeriodType = 'weekly' | 'monthly' | 'yearly' | 'all';
 
 interface CategoryBreakdown {
   category: string;
@@ -47,6 +47,11 @@ function getDateRange(
     case 'yearly': {
       start = new Date(year, 0, 1);
       end = new Date(year, 11, 31, 23, 59, 59, 999);
+      break;
+    }
+    case 'all': {
+      start = new Date(0);
+      end = new Date(8640000000000000);
       break;
     }
   }
@@ -158,6 +163,7 @@ export function Reports() {
             { value: 'weekly', label: 'Mingguan' },
             { value: 'monthly', label: 'Bulanan' },
             { value: 'yearly', label: 'Tahunan' },
+            { value: 'all', label: 'Semua Waktu' },
           ] as const).map((p) => (
             <button
               key={p.value}
