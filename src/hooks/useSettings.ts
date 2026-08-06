@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import db from '../lib/db';
-import type { Transaction, Budget, Setting, SavingsGoal, SavingsRecord } from '../types';
+import type { Transaction, Budget, Setting, SavingsGoal, SavingsRecord, CustomCategory } from '../types';
 
 export function useSettings() {
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -50,9 +50,10 @@ export function useSettings() {
     const settingsData = await db.settings.toArray();
     const savingsGoals = await db.savingsGoals.toArray();
     const savingsRecords = await db.savingsRecords.toArray();
+    const customCategories = await db.customCategories.toArray();
 
     const backup = {
-      version: 2,
+      version: 3,
       createdAt: new Date().toISOString(),
       data: {
         transactions,
@@ -60,6 +61,7 @@ export function useSettings() {
         settings: settingsData,
         savingsGoals,
         savingsRecords,
+        customCategories,
       },
     };
 
@@ -77,6 +79,7 @@ export function useSettings() {
             settings: Setting[];
             savingsGoals?: SavingsGoal[];
             savingsRecords?: SavingsRecord[];
+            customCategories?: CustomCategory[];
           };
         };
 
@@ -86,17 +89,21 @@ export function useSettings() {
 
         await db.transaction(
           'rw',
-          db.transactions,
-          db.budgets,
-          db.settings,
-          db.savingsGoals,
-          db.savingsRecords,
+          [
+            db.transactions,
+            db.budgets,
+            db.settings,
+            db.savingsGoals,
+            db.savingsRecords,
+            db.customCategories,
+          ],
           async () => {
             await db.transactions.clear();
             await db.budgets.clear();
             await db.settings.clear();
             await db.savingsGoals.clear();
             await db.savingsRecords.clear();
+            await db.customCategories.clear();
 
             if (backup.data.transactions.length > 0) {
               await db.transactions.bulkAdd(
@@ -131,6 +138,14 @@ export function useSettings() {
                   ...r,
                   id: undefined,
                   transactionId: undefined,
+                }))
+              );
+            }
+            if (backup.data.customCategories && backup.data.customCategories.length > 0) {
+              await db.customCategories.bulkAdd(
+                backup.data.customCategories.map((c) => ({
+                  ...c,
+                  id: undefined,
                 }))
               );
             }

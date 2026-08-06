@@ -1,4 +1,4 @@
-import type { Category } from '../types';
+import type { Category, CustomCategory } from '../types';
 
 export const INCOME_CATEGORIES: Category[] = [
   { id: 'salary', name: 'Gaji', icon: 'Briefcase', color: '#0EA5E9' },
@@ -22,8 +22,40 @@ export const EXPENSE_CATEGORIES: Category[] = [
 
 export const ALL_CATEGORIES = [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
 
+export const CUSTOM_CATEGORY_ICON = 'Tag';
+export const CUSTOM_CATEGORY_COLORS = [
+  '#0891B2', '#16A34A', '#CA8A04', '#7C3AED', '#DB2777',
+  '#EA580C', '#0284C7', '#4F46E5', '#65A30D', '#BE185D',
+];
+
+const customCategoryMap: Record<string, Category> = {};
+
+export function registerCustomCategories(custom: CustomCategory[]) {
+  custom.forEach((c) => {
+    customCategoryMap[c.name.toLowerCase()] = {
+      id: c.name,
+      name: c.name,
+      icon: CUSTOM_CATEGORY_ICON,
+      color: c.color,
+    };
+  });
+}
+
+export function customCategoryToCategory(c: CustomCategory): Category {
+  return {
+    id: c.name,
+    name: c.name,
+    icon: CUSTOM_CATEGORY_ICON,
+    color: c.color,
+  };
+}
+
+export function mergeCategories(standard: Category[], custom: CustomCategory[]): Category[] {
+  return [...standard, ...custom.map(customCategoryToCategory)];
+}
+
 export function getCategoryById(id: string): Category | undefined {
-  return ALL_CATEGORIES.find((c) => c.id === id);
+  return ALL_CATEGORIES.find((c) => c.id === id) || customCategoryMap[id.toLowerCase()];
 }
 
 export function getCategoriesByType(type: 'income' | 'expense'): Category[] {

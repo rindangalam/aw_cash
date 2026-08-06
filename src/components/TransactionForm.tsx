@@ -3,9 +3,10 @@ import { Modal } from './ui/Modal';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { LucideIcon } from './ui/LucideIcon';
-import { getCategoriesByType } from '../lib/constants';
+import { getCategoriesByType, mergeCategories } from '../lib/constants';
 import { parseCurrencyInput } from '../lib/utils';
 import { getTodayISO } from '../lib/utils';
+import { useCustomCategories } from '../hooks/useCustomCategories';
 import type { Transaction } from '../types';
 
 interface TransactionFormProps {
@@ -49,8 +50,13 @@ export function TransactionForm({
     setErrors({});
   }, [initialData, isOpen, lockedType]);
 
-  const categories = getCategoriesByType(type).filter(
-    (c) => c.id !== 'savings' && c.id !== 'savings_withdraw'
+  const { categories: customCategories } = useCustomCategories(type);
+
+  const categories = mergeCategories(
+    getCategoriesByType(type).filter(
+      (c) => c.id !== 'savings' && c.id !== 'savings_withdraw'
+    ),
+    customCategories
   );
 
   const validate = (): boolean => {

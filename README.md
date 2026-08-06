@@ -25,6 +25,7 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 - Progress bar per kategori (hijau/kuning/merah)
 - Klik kartu → **drill-down transaksi** kategori tersebut
 - Ringkasan **Total Budget** & **Selisih Budget** (Pemasukan − Budget)
+- Tombol **+** untuk membuat **kategori pengeluaran sendiri** (custom) langsung dari form budget
 
 ### Tabungan
 - Buat goal tabungan (target, deadline, ikon, warna)
@@ -50,6 +51,7 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 - **Dashboard**: toggle saldo Bulan Ini ↔ Keseluruhan + tombol mata untuk sembunyikan angka
 - Budget: card **Selisih Budget** (Pemasukan − Budget) menggantikan "Terpakai"
 - Transaksi: **FAB sesuai filter** (Semua tanpa FAB, Pemasukan biru, Pengeluaran merah, form terkunci jenis)
+- **Kategori custom pengeluaran**: tombol + di Tambah Budget (menggantikan "Lainnya"), kategori otomatis muncul di pilihan kategori pengeluaran; ikut di-backup/restore
 - Perbaikan bug: klik Edit/Hapus di kartu Budget tidak lagi membuka modal drill-down, konfirmasi hapus catatan tabungan, input nominal titik ribuan
 - **Performance**: code-split per halaman (bundle awal 900 KB → 235 KB)
 - Laporan: periode **Semua Waktu**; pencarian transaksi termasuk nama kategori

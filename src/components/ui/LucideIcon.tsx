@@ -7,7 +7,7 @@ import {
   TrendingDown, FileText, CircleAlert, Loader2,
   ChevronLeft, ChevronRight, Check, RotateCcw,
   Smartphone, Plane, Shield, Gift, Umbrella, Camera, Music, Pin,
-  Eye, EyeOff, ArrowLeftRight,
+  Eye, EyeOff, ArrowLeftRight, Tag,
 } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
@@ -36,7 +36,7 @@ const iconMap: Record<string, React.ComponentType<{ size?: number; className?: s
   TrendingDown, FileText, CircleAlert, Loader2,
   ChevronLeft, ChevronRight, Check, RotateCcw, ChickenBank,
   Smartphone, Plane, Shield, Gift, Umbrella, Camera, Music, Pin,
-  Eye, EyeOff, ArrowLeftRight,
+  Eye, EyeOff, ArrowLeftRight, Tag,
 };
 
 export function LucideIcon({ name, size = 20, className, style }: { name: string; size?: number; className?: string; style?: CSSProperties }) {

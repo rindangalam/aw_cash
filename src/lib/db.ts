@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie';
-import type { Transaction, Budget, Setting, SavingsGoal, SavingsRecord } from '../types';
+import type { Transaction, Budget, Setting, SavingsGoal, SavingsRecord, CustomCategory } from '../types';
 
 const db = new Dexie('AWCashDB') as Dexie & {
   transactions: EntityTable<Transaction, 'id'>;
@@ -7,6 +7,7 @@ const db = new Dexie('AWCashDB') as Dexie & {
   settings: EntityTable<Setting, 'key'>;
   savingsGoals: EntityTable<SavingsGoal, 'id'>;
   savingsRecords: EntityTable<SavingsRecord, 'id'>;
+  customCategories: EntityTable<CustomCategory, 'id'>;
 };
 
 db.version(1).stores({
@@ -22,6 +23,10 @@ db.version(2).stores({
 
 db.version(3).stores({
   savingsRecords: '++id, goalId, transactionId, date, createdAt',
+});
+
+db.version(4).stores({
+  customCategories: '++id, type, name, createdAt',
 });
 
 export default db;

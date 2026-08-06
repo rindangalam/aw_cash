@@ -31,7 +31,7 @@ export function TransactionItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
           <span className="font-semibold text-[13px] text-text dark:text-text-dark truncate">
-            {category?.name}
+            {category?.name || transaction.category}
           </span>
           <span
             className={`font-bold text-[13px] tabular-nums shrink-0 ${

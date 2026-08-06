@@ -73,7 +73,7 @@ export function DayDetail({ day, month, year, transactions, dayData, onClose }: 
                 </div>
                 <div className="flex-1 min-w-0">
                   <span className="text-[12px] font-semibold text-text dark:text-text-dark">
-                    {cat?.name}
+                    {cat?.name || t.category}
                   </span>
                   {t.note && (
                     <span className="text-[11px] text-text-secondary dark:text-text-secondary-dark ml-1.5 truncate">

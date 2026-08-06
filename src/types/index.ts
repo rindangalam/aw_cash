@@ -30,6 +30,14 @@ export interface Category {
   color: string;
 }
 
+export interface CustomCategory {
+  id?: number;
+  type: 'income' | 'expense';
+  name: string;
+  color: string;
+  createdAt: string;
+}
+
 export interface SavingsGoal {
   id?: number;
   name: string;

@@ -1,6 +1,8 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LoadingSpinner } from './components/ui/LoadingSpinner';
+import { registerCustomCategories } from './lib/constants';
+import db from './lib/db';
 
 const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
 const Transactions = lazy(() => import('./pages/Transactions').then((m) => ({ default: m.Transactions })));
@@ -19,6 +21,12 @@ function PageFallback() {
 }
 
 function App() {
+  useEffect(() => {
+    db.customCategories.toArray().then((data) => {
+      registerCustomCategories(data);
+    });
+  }, []);
+
   return (
     <BrowserRouter>
       <Suspense fallback={<PageFallback />}>
