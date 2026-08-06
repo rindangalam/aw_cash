@@ -49,7 +49,7 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 - Tombol **Hapus** untuk tabungan aktif (tanpa harus diselesaikan dulu) + konfirmasi
 - Fitur **Pin tabungan** (tombol pin di kartu, menggantikan long-press)
 - **Dashboard**: toggle saldo Bulan Ini ↔ Keseluruhan + tombol mata untuk sembunyikan angka
-- Budget: card **Selisih Budget** (Pemasukan − Budget) menggantikan "Terpakai"
+- Budget: ringkasan **Sisa Budget** (Total Budget − terpakai, berkurang saat dipakai) & **Uang di Luar Budget** (Pemasukan − Budget − pengeluaran non-budget)
 - Transaksi: **FAB sesuai filter** (Semua tanpa FAB, Pemasukan biru, Pengeluaran merah, form terkunci jenis)
 - **Kategori custom pengeluaran**: tombol + di Tambah Budget (menggantikan "Lainnya"), kategori otomatis muncul di pilihan kategori pengeluaran; ikut di-backup/restore
 - Perbaikan bug: klik Edit/Hapus di kartu Budget tidak lagi membuka modal drill-down, konfirmasi hapus catatan tabungan, input nominal titik ribuan

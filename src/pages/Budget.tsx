@@ -61,7 +61,31 @@ export function Budget() {
     })
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const budgetDiff = monthlyIncome - totalBudget;
+  const budgetedCategories = useMemo(
+    () => new Set(budgets.map((b) => b.category)),
+    [budgets]
+  );
+
+  const spentOnBudget = budgets.reduce(
+    (sum, b) => sum + (spendingByCategory[b.category] || 0),
+    0
+  );
+
+  const sisaBudget = totalBudget - spentOnBudget;
+
+  const spentOutsideBudget = transactions
+    .filter((t) => {
+      if (t.type !== 'expense') return false;
+      const date = new Date(t.date);
+      return (
+        date.getMonth() + 1 === selectedMonth &&
+        date.getFullYear() === selectedYear &&
+        !budgetedCategories.has(t.category)
+      );
+    })
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const uangDiLuarBudget = monthlyIncome - totalBudget - spentOutsideBudget;
 
   const transactionsForBudget = useMemo(() => {
     if (!selectedBudget) return [];
@@ -163,25 +187,32 @@ export function Budget() {
             <div className="flex gap-3">
             <div className="flex-1 p-4 bg-surface dark:bg-surface-dark rounded-2xl border border-border/60 dark:border-border-dark/60">
               <p className="text-[11px] font-medium text-text-secondary dark:text-text-secondary-dark">
-                Total Budget
+                Sisa Budget
               </p>
-              <p className="text-lg font-bold text-text dark:text-text-dark tabular-nums mt-1">
-                {showBalance ? fmt.format(totalBudget) : 'Rp ••••••'}
+              <p
+                className={`text-lg font-bold tabular-nums mt-1 ${
+                  showBalance && sisaBudget >= 0 ? 'text-primary' : 'text-danger'
+                }`}
+              >
+                {showBalance ? fmt.format(sisaBudget) : 'Rp ••••••'}
+              </p>
+              <p className="text-[10px] font-medium text-text-secondary dark:text-text-secondary-dark mt-0.5">
+                dari {fmt.format(totalBudget)}
               </p>
             </div>
             <div className="flex-1 p-4 bg-surface dark:bg-surface-dark rounded-2xl border border-border/60 dark:border-border-dark/60">
               <p className="text-[11px] font-medium text-text-secondary dark:text-text-secondary-dark">
-                Selisih Budget
+                Uang di Luar Budget
               </p>
               <p
                 className={`text-lg font-bold tabular-nums mt-1 ${
-                  showBalance && budgetDiff >= 0 ? 'text-primary' : 'text-danger'
+                  showBalance && uangDiLuarBudget >= 0 ? 'text-primary' : 'text-danger'
                 }`}
               >
-                {showBalance ? fmt.format(budgetDiff) : 'Rp ••••••'}
+                {showBalance ? fmt.format(uangDiLuarBudget) : 'Rp ••••••'}
               </p>
               <p className="text-[10px] font-medium text-text-secondary dark:text-text-secondary-dark mt-0.5">
-                Pemasukan − Budget
+                Pemasukan − Budget − Pengeluaran lain
               </p>
             </div>
           </div>
