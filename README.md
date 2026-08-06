@@ -1,6 +1,25 @@
 # AW Cash
 
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-Yes-4285F4?logo=pwa&logoColor=white)
+![Offline-first](https://img.shields.io/badge/Offline--first-100%25-16a34a)
+![License](https://img.shields.io/badge/License-MIT-16a34a)
+
 Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data tersimpan lokal di perangkat — tanpa server, tanpa internet, tanpa khawatir data bocor.
+
+## Daftar Isi
+
+- [Fitur Utama](#fitur-utama)
+- [Tech Stack](#tech-stack)
+- [Struktur Proyek](#struktur-proyek)
+- [Development](#development)
+- [Instalasi PWA](#instalasi-pwa)
+- [Privasi & Keamanan Data](#privasi--keamanan-data)
+- [Lisensi](#lisensi)
+- [Changelog](#changelog)
 
 ## Fitur Utama
 
@@ -13,7 +32,7 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 ### Transaksi
 - Input pemasukan/pengeluaran dengan kategori, tanggal, dan catatan
 - Tampilan **list** dan **kalender**
-- Filter **Semua / Pemasukan / Pengeluaran**:
+- Filter **Semua / Pemasukan / Pengeluaran** dengan FAB kontekstual:
   - Semua → hanya rincian (tanpa tombol tambah)
   - Pemasukan → tombol + biru, form terkunci untuk pemasukan
   - Pengeluaran → tombol + merah, form terkunci untuk pengeluaran
@@ -24,7 +43,7 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 - Atur budget per kategori (per bulan/tahun)
 - Progress bar per kategori (hijau/kuning/merah)
 - Klik kartu → **drill-down transaksi** kategori tersebut
-- Ringkasan **Total Budget** & **Selisih Budget** (Pemasukan − Budget)
+- Ringkasan **Sisa Budget** (berkurang saat budget terpakai) & **Uang di Luar Budget** (Pemasukan − Budget − pengeluaran non-budget)
 - Tombol **+** untuk membuat **kategori pengeluaran sendiri** (custom) langsung dari form budget
 
 ### Tabungan
@@ -42,54 +61,57 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 - Tema terang/gelap/sistem
 - Backup & restore data (JSON)
 
----
-
-## Update Terbaru — Agustus 2026
-
-- Tombol **Hapus** untuk tabungan aktif (tanpa harus diselesaikan dulu) + konfirmasi
-- Fitur **Pin tabungan** (tombol pin di kartu, menggantikan long-press)
-- **Dashboard**: toggle saldo Bulan Ini ↔ Keseluruhan + tombol mata untuk sembunyikan angka
-- Budget: ringkasan **Sisa Budget** (Total Budget − terpakai, berkurang saat dipakai) & **Uang di Luar Budget** (Pemasukan − Budget − pengeluaran non-budget)
-- Transaksi: **FAB sesuai filter** (Semua tanpa FAB, Pemasukan biru, Pengeluaran merah, form terkunci jenis)
-- **Kategori custom pengeluaran**: tombol + di Tambah Budget (menggantikan "Lainnya"), kategori otomatis muncul di pilihan kategori pengeluaran; ikut di-backup/restore
-- Perbaikan bug: klik Edit/Hapus di kartu Budget tidak lagi membuka modal drill-down, konfirmasi hapus catatan tabungan, input nominal titik ribuan
-- **Performance**: code-split per halaman (bundle awal 900 KB → 235 KB)
-- Laporan: periode **Semua Waktu**; pencarian transaksi termasuk nama kategori
-- Migrasi chart **Recharts → Chart.js** (memperbaiki glitch grafik di Android)
-
----
-
 ## Tech Stack
 
 | Teknologi | Kegunaan |
 |---|---|
 | React 19 + TypeScript | UI & tipe aman |
 | Vite 8 + Tailwind CSS 4 | Build & styling |
-| Dexie.js (IndexedDB) | Database lokal (5 tabel) |
+| Dexie.js (IndexedDB) | Database lokal (6 tabel) |
 | Zustand | State management |
 | React Router 7 | Navigasi |
 | Chart.js | Grafik |
 | vite-plugin-pwa | PWA / offline |
 | SheetJS (xlsx) | Export Excel |
 
----
+## Struktur Proyek
 
-## Data Privacy & Security
+```
+src/
+├── components/
+│   ├── ui/            # UI primitives (Button, Input, Modal, Card, Badge, ConfirmDialog, ...)
+│   ├── layout/        # Header, BottomNav, PageLayout
+│   └── ...            # Komponen fitur (BudgetCard, SavingsGoalCard, TransactionForm, ...)
+├── pages/             # Halaman rute (Dashboard, Transaksi, Budget, Tabungan, Laporan, Pengaturan)
+├── hooks/             # Custom hooks (useTransactions, useBudget, useSavings, useSettings, ...)
+├── stores/            # Zustand stores
+├── lib/               # db.ts, constants.ts, utils.ts, export.ts
+└── types/             # TypeScript interfaces
+```
 
-**Semua data tersimpan LOKAL di device kamu.**
+## Development
 
-- Data disimpan di IndexedDB (database browser)
-- Tidak ada data yang dikirim ke server
-- Tidak ada backend/server - murni client-side
-- Hosting hanya menyimpan kode app, bukan data user
-- Setiap user terisolasi total satu sama lain
+### Prerequisites
 
-> ⚠️ Penting:
-> - Jika clear browser data → data hilang
-> - Jika ganti HP → data tidak otomatis pindah
-> - Gunakan fitur Backup/Restore untuk export/import data
+- Node.js 20.19+ atau 22.12+
+- npm
 
-## Cara Install PWA
+### Menjalankan
+
+```bash
+npm install    # install dependencies
+npm run dev    # development server
+npm run build  # production build (tsc + vite)
+npm run lint   # oxlint
+```
+
+### Catatan
+
+- Aplikasi berjalan **full offline** — semua data di IndexedDB, tanpa backend
+- Gunakan `npm run build` sebelum push untuk memastikan TypeScript lulus
+- Konvensi commit: `feat:` / `fix:` / `refactor:` / `style:` / `docs:` / `perf:`
+
+## Instalasi PWA
 
 ### Android
 1. Buka app di Chrome
@@ -108,3 +130,26 @@ Aplikasi manajemen keuangan personal **offline-first** berbasis PWA. Semua data 
 - App bisa dibuka seperti app biasa
 - Bekerja offline (setelah pertama kali dibuka)
 - Data tetap tersimpan di lokal
+
+## Privasi & Keamanan Data
+
+**Semua data tersimpan LOKAL di device kamu.**
+
+- Data disimpan di IndexedDB (database browser)
+- Tidak ada data yang dikirim ke server
+- Tidak ada backend/server — murni client-side
+- Hosting hanya menyimpan kode app, bukan data user
+- Setiap user terisolasi total satu sama lain
+
+> ⚠️ Penting:
+> - Jika clear browser data → data hilang
+> - Jika ganti HP → data tidak otomatis pindah
+> - Gunakan fitur Backup/Restore untuk export/import data
+
+## Lisensi
+
+Distributed under the [MIT License](LICENSE). Copyright © 2026 rindangalam.
+
+## Changelog
+
+Lihat [CHANGELOG.md](CHANGELOG.md) untuk riwayat perubahan lengkap.
