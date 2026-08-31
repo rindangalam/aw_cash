@@ -13,7 +13,7 @@
 
 ---
 
-## 📋 Overview
+## Overview
 
 **AW Cash** is an offline-first personal finance management application built as a Progressive Web App (PWA). All data is stored locally on your device using IndexedDB — no backend servers, no internet dependency, and complete privacy control.
 
@@ -25,9 +25,9 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 💰 Dashboard
+### Dashboard
 - **Balance toggle** — Switch between current month and total balance with one tap
 - **Privacy mode** — Hide/show all numbers with eye icon button
 - **Visual analytics**:
@@ -37,7 +37,7 @@
 - **Smart alerts** — Budget warnings when spending approaches limits
 - **Savings summary** — Track progress toward savings goals
 
-### 📝 Transactions
+### Transactions
 - **Quick entry** — Add income/expense with category, date, and notes
 - **Dual view modes** — List view or calendar view
 - **Smart filtering**:
@@ -47,7 +47,7 @@
 - **Search** — Find transactions by note text or category name
 - **Date filtering** — Filter by month/year
 
-### 📊 Budget Management
+### Budget Management
 - **Category budgets** — Set monthly or yearly budgets per category
 - **Visual progress** — Color-coded progress bars (green/yellow/red)
 - **Drill-down analysis** — Click any category card to see detailed transactions
@@ -56,7 +56,7 @@
   - Money outside budget (Income − Budget − non-budgeted expenses)
 - **Custom categories** — Create custom expense categories directly from budget form
 
-### 🎯 Savings Goals
+### Savings Goals
 - **Goal tracking** — Create savings goals with target amount, deadline, icon, and color
 - **Deposit/Withdraw** — Automatically recorded as transactions
 - **Goal management**:
@@ -65,7 +65,7 @@
   - Delete with confirmation
 - **Transaction history** — View deposit/withdrawal history per goal with delete confirmation
 
-### 📈 Reports
+### Reports
 - **Flexible periods** — Weekly / Monthly / Yearly / All Time
 - **Category breakdown** — Income and expense analysis by category
 - **Excel export** — Download complete data as .xlsx file with 4 sheets:
@@ -74,13 +74,13 @@
   - Savings Goals
   - Savings Records
 
-### ⚙️ Settings
+### Settings
 - **Theme control** — Light / Dark / System
 - **Data management** — Backup and restore data (JSON format)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
 |------------|---------|
@@ -97,43 +97,43 @@
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 aw_cash/
-├── src/
-│   ├── components/
-│   │   ├── ui/                 # UI primitives (Button, Input, Modal, Card, Badge, etc.)
-│   │   ├── layout/             # Header, BottomNav, PageLayout
-│   │   └── ...                 # Feature components (BudgetCard, SavingsGoalCard, etc.)
-│   ├── pages/                  # Route pages
-│   │   ├── Dashboard.tsx
-│   │   ├── Transactions.tsx
-│   │   ├── Budget.tsx
-│   │   ├── Savings.tsx
-│   │   ├── Reports.tsx
-│   │   └── Settings.tsx
-│   ├── hooks/                  # Custom hooks
-│   │   ├── useTransactions.ts
-│   │   ├── useBudget.ts
-│   │   ├── useSavings.ts
-│   │   └── useSettings.ts
-│   ├── stores/                 # Zustand state stores
-│   ├── lib/                    # Core utilities
-│   │   ├── db.ts               # Dexie database schema
-│   │   ├── constants.ts        # App constants
-│   │   ├── utils.ts            # Helper functions
-│   │   └── export.ts           # Excel export logic
-│   └── types/                  # TypeScript interfaces
-├── public/                     # Static assets
-├── scripts/                    # Build scripts
-├── CHANGELOG.md                # Version history
-└── package.json
+ src/
+    components/
+       ui/                 # UI primitives (Button, Input, Modal, Card, Badge, etc.)
+       layout/             # Header, BottomNav, PageLayout
+       ...                 # Feature components (BudgetCard, SavingsGoalCard, etc.)
+    pages/                  # Route pages
+       Dashboard.tsx
+       Transactions.tsx
+       Budget.tsx
+       Savings.tsx
+       Reports.tsx
+       Settings.tsx
+    hooks/                  # Custom hooks
+       useTransactions.ts
+       useBudget.ts
+       useSavings.ts
+       useSettings.ts
+    stores/                 # Zustand state stores
+    lib/                    # Core utilities
+       db.ts               # Dexie database schema
+       constants.ts        # App constants
+       utils.ts            # Helper functions
+       export.ts           # Excel export logic
+    types/                  # TypeScript interfaces
+ public/                     # Static assets
+ scripts/                    # Build scripts
+ CHANGELOG.md                # Version history
+ package.json
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **Node.js** 20.19+ or 22.12+
@@ -174,7 +174,7 @@ npm run lint
 
 ---
 
-## 📱 Installing as PWA
+## Installing as PWA
 
 ### Android (Chrome/Edge)
 1. Open the app in Chrome or Edge browser
@@ -203,7 +203,7 @@ npm run lint
 
 ---
 
-## 🗄️ Database Schema
+## Database Schema
 
 **6 IndexedDB Tables via Dexie:**
 
@@ -216,7 +216,7 @@ npm run lint
 
 ---
 
-## 🔐 Privacy & Data Security
+## Privacy & Data Security
 
 ### 100% Local Storage
 - All data stored in **IndexedDB** (browser database)
@@ -227,19 +227,19 @@ npm run lint
 
 ### Important Considerations
 
-⚠️ **Data Loss Scenarios:**
+ **Data Loss Scenarios:**
 - Clearing browser data will delete all transactions
 - Switching devices won't transfer data automatically
 - Uninstalling PWA may clear data (browser-dependent)
 
-✅ **Data Protection:**
+ **Data Protection:**
 - Use **Backup** feature regularly (exports JSON file)
 - Use **Restore** feature to import backup on new device
 - Keep backup files in safe location (cloud storage, USB drive)
 
 ---
 
-## 🎨 Features in Detail
+## Features in Detail
 
 ### Smart Context Filtering
 The transaction page FAB (Floating Action Button) changes based on selected filter:
@@ -291,7 +291,7 @@ Follow conventional commits:
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
 ### Static Hosting Options
 Since this is a pure client-side app, deploy to any static hosting:
@@ -306,7 +306,7 @@ Output directory: `dist`
 
 ---
 
-## 📊 Performance
+## Performance
 
 - **Offline-first**: Works without internet after initial load
 - **Fast**: Vite HMR for instant development feedback
@@ -327,7 +327,7 @@ Contributions are welcome! To contribute:
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the [MIT License](LICENSE).
 
@@ -335,20 +335,20 @@ Copyright © 2026 rindangalam
 
 ---
 
-## 📝 Changelog
+## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for complete version history.
 
 ---
 
-## 👤 Author
+## Author
 
 **Rindang Alam Nur Muhammad**  
 GitHub: [@rindangalam](https://github.com/rindangalam)
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with:
 - [React](https://react.dev/) - UI library
@@ -360,7 +360,7 @@ Built with:
 
 ---
 
-## 📧 Support
+## Support
 
 For issues or feature requests:
 - Open an issue on [GitHub Issues](https://github.com/rindangalam/aw_cash/issues)
