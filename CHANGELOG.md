@@ -6,6 +6,8 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id-ID/1.1.0/), da
 
 ## [Unreleased]
 
+## [1.0.0]
+
 ### Added
 - **Kategori custom pengeluaran**: tombol + di Tambah Budget (menggantikan "Lainnya"), kategori otomatis muncul di pilihan kategori pengeluaran; ikut di-backup/restore
 - Ringkasan **Sisa Budget** (Total Budget − terpakai, berkurang saat dipakai) & **Uang di Luar Budget** (Pemasukan − Budget − pengeluaran non-budget, termasuk setor tabungan)
