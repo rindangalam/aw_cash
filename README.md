@@ -11,6 +11,12 @@
 [![Offline-first](https://img.shields.io/badge/Offline--first-100%25-16a34a)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Offline_and_background_operation)
 [![License](https://img.shields.io/badge/License-MIT-16a34a)](LICENSE)
 
+<p align="center">
+  <a href="https://aw-cash.vercel.app">
+    <img src="https://img.shields.io/badge/Live_Demo-aw--cash.vercel.app-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+  </a>
+</p>
+
 ---
 
 ## Overview
@@ -134,6 +140,12 @@ aw_cash/
 ---
 
 ## Getting Started
+
+### Live Demo
+
+No installation needed — try it directly in your browser: **[aw-cash.vercel.app](https://aw-cash.vercel.app)**
+
+### Development
 
 ### Prerequisites
 - **Node.js** 20.19+ or 22.12+
