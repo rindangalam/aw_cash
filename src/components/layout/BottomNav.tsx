@@ -7,7 +7,7 @@ const navItems = [
   { to: '/budget', label: 'Budget', icon: 'PieChart' },
   { to: '/savings', label: 'Tabungan', icon: 'ChickenBank' },
   { to: '/reports', label: 'Laporan', icon: 'BarChart3' },
-  { to: '/settings', label: 'Lainnya', icon: 'Settings' },
+  { to: '/settings', label: 'Pengaturan', icon: 'Settings' },
 ];
 
 export function BottomNav() {

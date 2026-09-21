@@ -23,7 +23,7 @@ export function Settings() {
   const [pendingRestore, setPendingRestore] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const currentTheme = (getSetting('theme', 'system') as Theme) || 'system';
+  const currentTheme = (getSetting('theme', (localStorage.getItem('theme') as Theme) || 'system') as Theme) || 'system';
 
   useEffect(() => {
     applyTheme(currentTheme);
