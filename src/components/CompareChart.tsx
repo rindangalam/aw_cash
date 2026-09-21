@@ -3,6 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend } from 'chart.js';
 import { formatCurrency, getMonthName } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
+import { useDarkMode } from '../hooks/useDarkMode';
 import type { Transaction } from '../types';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -42,6 +43,8 @@ function getMonthTotals(transactions: Transaction[], monthOffset: number): Month
 }
 
 export const CompareChart = memo(function CompareChart({ transactions }: CompareChartProps) {
+  const isDark = useDarkMode();
+
   const { current, previous, change } = useMemo(() => {
     const cur = getMonthTotals(transactions, 0);
     const prev = getMonthTotals(transactions, 1);
@@ -106,7 +109,7 @@ export const CompareChart = memo(function CompareChart({ transactions }: Compare
           pointStyle: 'circle',
           padding: 16,
           font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
-          color: '#78716C',
+          color: isDark ? '#A8A29E' : '#78716C',
         },
       },
       tooltip: {
@@ -129,15 +132,15 @@ export const CompareChart = memo(function CompareChart({ transactions }: Compare
         border: { display: false },
         ticks: {
           font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
-          color: '#78716C',
+          color: isDark ? '#A8A29E' : '#78716C',
         },
       },
       y: {
-        grid: { color: '#E7E5E4', drawBorder: false },
+        grid: { color: isDark ? '#44403C' : '#E7E5E4', drawBorder: false },
         border: { display: false },
         ticks: {
           font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
-          color: '#78716C',
+          color: isDark ? '#A8A29E' : '#78716C',
           callback: (value: number | string) => {
             const num = typeof value === 'string' ? parseFloat(value) : value;
             return num >= 1000000 ? `${(num / 1000000).toFixed(0)}jt` : `${(num / 1000).toFixed(0)}rb`;

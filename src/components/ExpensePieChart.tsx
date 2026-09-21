@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { getCategoryById } from '../lib/constants';
 import { formatCurrency } from '../lib/utils';
 import { LucideIcon } from './ui/LucideIcon';
+import { useDarkMode } from '../hooks/useDarkMode';
 import type { Transaction } from '../types';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -21,6 +22,7 @@ interface ChartDataItem {
 }
 
 export const ExpensePieChart = memo(function ExpensePieChart({ transactions, month, year }: ExpensePieChartProps) {
+  const isDark = useDarkMode();
   const expenseData = transactions
     .filter((t) => {
       if (t.type !== 'expense') return false;
@@ -61,7 +63,7 @@ export const ExpensePieChart = memo(function ExpensePieChart({ transactions, mon
         data: chartDataItems.map((d) => d.value),
         backgroundColor: chartDataItems.map((d) => d.color),
         borderWidth: 2,
-        borderColor: '#fff',
+        borderColor: isDark ? '#1C1917' : '#fff',
         hoverBorderWidth: 3,
         hoverOffset: 6,
       },
@@ -81,7 +83,7 @@ export const ExpensePieChart = memo(function ExpensePieChart({ transactions, mon
           pointStyle: 'circle',
           padding: 12,
           font: { family: 'Plus Jakarta Sans', size: 11, weight: 500 },
-          color: '#78716C',
+          color: isDark ? '#A8A29E' : '#78716C',
         },
       },
       tooltip: {
