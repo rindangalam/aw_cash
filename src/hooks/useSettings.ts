@@ -53,7 +53,7 @@ export function useSettings() {
     const customCategories = await db.customCategories.toArray();
 
     const backup = {
-      version: 3,
+      version: 4,
       createdAt: new Date().toISOString(),
       data: {
         transactions,
